@@ -1,4 +1,5 @@
 #include "../include/inci.h"
+#include "../include/util.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -6,54 +7,7 @@
 #include <vector>
 #include <optional>
 
-using std::vector;
-using std::string;
-using std::ifstream;
-using std::stringstream;
-using std::cerr;
 
-//static std::pair<bool, string> LoadFile()
-//{
-//    ifstream file("test.txt");
-//    if( file )
-//    {
-//        return {true, string{
-//                std::istreambuf_iterator{ file },
-//                std::istreambuf_iterator<char>{}
-//        }};
-//    }
-//    return {false, {}};
-//}
-static std::optional<string> LoadFile()
-{
-    ifstream file("inputs/network1.csv");
-    if( file )
-    {
-        return /*{true, */string{
-                std::istreambuf_iterator{ file },
-                std::istreambuf_iterator<char>{}
-        }/*}*/;
-    }
-    return {};
-}
-template <typename T>
-static void printVec(const std::vector<T> &vec)
-{
-    for(const auto& elem : vec){
-        cerr << elem << "\t";
-    }
-    cerr << "\n";
-}
-template <typename T>
-static void printMat(const std::vector<std::vector<T>> &mat)
-{
-    for(const auto& row : mat){
-        for(const auto& col : row){
-            cerr << col << " ";
-        }
-        cerr << "\n" ;
-    }
-}
 int main()
 {
 //    //const auto [exists, s] = LoadFile();
