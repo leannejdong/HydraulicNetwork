@@ -6,17 +6,19 @@
 #define HYDRAULICNETWORK_INCI_H
 #include <vector>
 
-std::vector<std::vector<int>> gen_mat(size_t m, size_t n, std::vector<int> &in, std::vector<int> &out){
+
+template <typename T>
+std::vector<std::vector<int>> gen_mat(T m, T n, std::vector<T> &in, std::vector<T> &out){
     // For declaring a 2D vector, we first define a 1D array of size equal to the number of rows m of the desired 2D vector
     std::vector<std::vector<int>>mat(m);
-    for(size_t i{0}; i < n; ++i){
+    for(T i{0}; i < n; ++i){
         mat[i].resize(n);
     }
 
     //std::vector<int> in, out;
 
-    for (size_t i{0}; i < m; ++i)
-        for (size_t j{0}; j < n; ++j){
+    for (T i{0}; i < m; ++i)
+        for (T j{0}; j < n; ++j){
             if(j == in[i]) {
                 mat[i][j] = 1;
             }

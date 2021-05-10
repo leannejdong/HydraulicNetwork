@@ -36,14 +36,16 @@ static std::optional<string> LoadFile()
     }
     return {};
 }
-static void printVec(const std::vector<int> &vec)
+template <typename T>
+static void printVec(const std::vector<T> &vec)
 {
     for(const auto& elem : vec){
         cerr << elem << "\t";
     }
     cerr << "\n";
 }
-static void printMat(const std::vector<std::vector<int>> &mat)
+template <typename T>
+static void printMat(const std::vector<std::vector<T>> &mat)
 {
     for(const auto& row : mat){
         for(const auto& col : row){
@@ -102,14 +104,14 @@ int main()
         cerr << "\n";
     }
   // define the number of Nodes and Pipes
-    const int n = stoi(data[0][0]);
-    const int m = stoi(data[0][1]);
+    const size_t n = stoi(data[0][0]);
+    const size_t m = stoi(data[0][1]);
 //    std::cerr << "the number of nodes is " << n << "\n";
 //    std::cerr << "the number of pipes is " << m << "\n";
 
     vector<string> col4, col5;
     std::cerr << "the number of rows is " << data.size() << "\n";
-    for(int i = 0; i < data.size(); i++)
+    for(size_t i = 0; i < data.size(); i++)
     {
        // std::cerr << data[i][3];
         col4.push_back(data[i][3]);
@@ -127,7 +129,7 @@ int main()
 //    }
 
     std::cerr << "now let us convert vector of string of vector of ints" << "\n";
-    vector<int> col4_int, col5_int;
+    vector<size_t> col4_int, col5_int;
     for(auto c4 : col4){
         col4_int.push_back(stoi(c4));
     }
