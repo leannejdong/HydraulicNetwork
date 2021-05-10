@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <optional>
 
 using std::vector;
 using std::string;
@@ -11,6 +12,30 @@ using std::ifstream;
 using std::stringstream;
 using std::cerr;
 
+//static std::pair<bool, string> LoadFile()
+//{
+//    ifstream file("test.txt");
+//    if( file )
+//    {
+//        return {true, string{
+//                std::istreambuf_iterator{ file },
+//                std::istreambuf_iterator<char>{}
+//        }};
+//    }
+//    return {false, {}};
+//}
+static std::optional<string> LoadFile()
+{
+    ifstream file("inputs/network1.csv");
+    if( file )
+    {
+        return /*{true, */string{
+                std::istreambuf_iterator{ file },
+                std::istreambuf_iterator<char>{}
+        }/*}*/;
+    }
+    return {};
+}
 static void printVec(const std::vector<int> &vec)
 {
     for(const auto& elem : vec){
@@ -29,13 +54,26 @@ static void printMat(const std::vector<std::vector<int>> &mat)
 }
 int main()
 {
+//    //const auto [exists, s] = LoadFile();
+//    const auto s = LoadFile();
+//   // if( /*s.empty()*/!exists)
+//    if(s)
+//    {
+//        //cerr << "File [test.txt] could not be opened!\n";
+//        cerr << *s << "\n";
+//    }else{
+//        //cerr << s << "\n";
+//        cerr << "File [test.txt] could not be opened!\n";
+//    }
+// with std::optional, we need indeed just one line
+    cerr << LoadFile().value_or("File [network1.csv] could not be opened!") << "\n";
     ifstream in("inputs/network1.csv");
-    if (!in) {
-        std::cout << "\nThe data file could not be opened!\n";
-    }
-    else {
-        std::cout << "\nData file opened successfully!\n";
-    }
+//    if (!in) {
+//        std::cout << "\nThe data file could not be opened!\n";
+//    }
+//    else {
+//        std::cout << "\nData file opened successfully!\n";
+//    }
 
     vector<vector<string> > data;
     string line, word;
