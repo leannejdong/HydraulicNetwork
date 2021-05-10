@@ -1,9 +1,9 @@
-#include<iostream>
-#include<fstream>
-#include<string>
-#include <vector>
+#include "../include/inci.h"
+#include <fstream>
+#include <iostream>
 #include <sstream>
-#include "inci.h"
+#include <string>
+#include <vector>
 
 using std::vector;
 using std::string;
@@ -29,7 +29,13 @@ static void printMat(const std::vector<std::vector<int>> &mat)
 }
 int main()
 {
-    ifstream in("network1.csv");
+    ifstream in("inputs/network1.csv");
+    if (!in) {
+        std::cout << "\nThe data file could not be opened!\n";
+    }
+    else {
+        std::cout << "\nData file opened successfully!\n";
+    }
 
     vector<vector<string> > data;
     string line, word;
@@ -118,17 +124,3 @@ int main()
 
     return 0;
 }
-
-//#include "read_data.h"
-//int main()
-//{
-//    std::vector<std::string> vecOfStr;
-//    // Get the contents of file in a vector
-//    bool result = getFileContent("network1.csv", vecOfStr);
-//    if(result)
-//    {
-//        // Print the vector contents
-//        for(std::string & s : vecOfStr)
-//            std::cout<<s<<std::endl;
-//    }
-//}
