@@ -3,4 +3,4 @@ project(HydraulicNetwork)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(HydraulicNetwork main.cpp read_data.h)
+add_executable(HydraulicNetwork main.cpp read_data.h inci.h)
