@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(HydraulicNetwork)
 
 set(CMAKE_CXX_STANDARD 20)
-find_package(Eigen3 3.3)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 add_compile_options(-Wall -Wextra -pedantic -Wmissing-include-dirs -Wformat=2 -Wunused -Wcast-align)
 
@@ -15,7 +15,7 @@ endif()
 enable_testing()
 add_subdirectory(HydraulicNetLib)
 add_executable(HydraulicNetwork HydraulicNetLib/src/main.cpp HydraulicNetLib/include/inci.h)
-target_link_libraries(HydraulicNetwork PRIVATE HydraulicNetLib)
+target_link_libraries(HydraulicNetwork PRIVATE HydraulicNetLib Eigen3::Eigen)
 if (${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set(TARGETBITS 32)
 else()
