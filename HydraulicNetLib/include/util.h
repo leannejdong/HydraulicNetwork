@@ -54,9 +54,9 @@ inline void printMat(const std::vector<std::vector<T>> &mat)
 }
 
 template <typename T>
-inline void outputMat(const std::vector<std::vector<T>> &mat)
+inline std::vector<std::vector<T>> outputMat(const std::vector<std::vector<T>> &mat)
 {
-    std::ofstream filestr("inci.csv");
+    std::ofstream filestr("outputs/inci.csv");
     for(const auto& row : mat){
         for(const auto& col : row){
             //cerr << col << ",";
@@ -65,18 +65,13 @@ inline void outputMat(const std::vector<std::vector<T>> &mat)
         //cerr << "\n" ;
         filestr << "\n";
     }
+    return mat;
 }
 
 template <typename T>
 inline std::vector<std::vector<T>> outputReduceMat(std::vector<std::vector<T>> &mat)
 {
-    std::ofstream filestr("inci_reduced.csv");
-//    for(const auto& row : mat){
-//        for(const auto& col : row){
-//            filestr << col << " ";
-//        }
-//        filestr << "\n";
-//    }
+    std::ofstream filestr("outputs/inci_reduced.csv");
     int rowErasePosition = 0;
     mat.erase(mat.begin() + rowErasePosition);
     //reprinting
@@ -108,5 +103,16 @@ inline MatrixXd makeEigenMatrixFromVectors(const vector<vector<T>> &matvalues)
     }
 
     return A;
+}
+
+inline void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
+{
+    unsigned int numRows = matrix.rows()-1;
+    unsigned int numCols = matrix.cols();
+
+    if( rowToRemove < numRows )
+        matrix.block(rowToRemove,0,numRows-rowToRemove,numCols) = matrix.block(rowToRemove+1,0,numRows-rowToRemove,numCols);
+
+    matrix.conservativeResize(numRows,numCols);
 }
 #endif//HYDRAULICNETWORK_UTIL_H

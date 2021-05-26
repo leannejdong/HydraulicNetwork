@@ -118,36 +118,46 @@ int main()
     printVec(col5_int);
     vector<vector<int>> matA = gen_mat(m, n, col4_int, col5_int);
     //printMat(matA);
-    outputMat(matA);
-    vector<vector<int>> A = outputReduceMat(matA);
-    MatrixXd A_eigen = makeEigenMatrixFromVectors(A);
+   // vector<vector<int>> A = outputReduceMat(matA);
+    MatrixXd A_eigen = makeEigenMatrixFromVectors(matA);
+    cerr << "The matrix A is \n" << A_eigen << "\n";
+
     MatrixXd A_tran = - A_eigen.transpose();
-    //cerr << "The first row is " << A_eigen.row(0);
+    removeRow(A_tran, 0);
+    cerr << "The matrix -A^T is \n" << A_tran << "\n";
     MatrixXd demand;
     demand = openData("inputs/Heating_demand.csv");
     VectorXd Demand_z0(8760);
+    VectorXd Demand_z1(8760);
     VectorXd Demand_C = demand.col(0);
     VectorXd Demand_D = demand.col(1);
     VectorXd Demand_E = demand.col(2);
     VectorXd Demand_F = demand.col(3);
     VectorXd Demand_G = demand.col(4);
     Demand_z0.setZero();
-
+    Demand_z1.setZero();
     Demand_C = Demand_C/4.2/15;
     Demand_D = Demand_D/4.2/15;
     Demand_E = Demand_E/4.2/15;
     Demand_F = Demand_F/4.2/15;
     Demand_G = Demand_G/4.2/15;
 
-    MatrixXd B(8760, 6);
-    B << Demand_z0, Demand_C, Demand_D, Demand_E, Demand_F, Demand_G;
+    MatrixXd B(8760, 7);
+    B << Demand_z0, Demand_z1, Demand_C, Demand_D, Demand_E, Demand_F, Demand_G;
     VectorXd vec(7);
     vec << 0, 0, 0, 1, 1, 1, -1;
-    A_eigen.conservativeResize(A_eigen.rows()+1, NoChange);
-    A_eigen.row(A_eigen.rows() - 1) = vec;
+    A_tran.conservativeResize(A_tran.rows()+1, NoChange);
+    A_tran.row(A_tran.rows() - 1) = vec;
     cerr << "Here is the final A \n" ;
-    cerr << A_eigen << "\n";
-    //MatrixXd X = A_eigen.lu().solve(B.transpose());
+    cerr << A_tran << "\n";
+    MatrixXd X = A_tran.lu().solve(B.transpose());
    // MatrixXd X = A_eigen.colPivHouseholderQr().solve(B.transpose());
+    cerr << "Here is the first set of final solution for mass flow \n" ;
+    cerr << X.col(0) << ",";
+    cerr << "\n";
+    cerr << "The size of solution X is " << X.rows() << " rows and " << X.cols() << " columns\n";
+    saveData("outputs/flowQ.csv", X.transpose());
+
+
     return 0;
 }
