@@ -1,5 +1,5 @@
 project(HydraulicNetLib)
-add_library(HydraulicNetLib src/inci.cpp)
+add_library(HydraulicNetLib src/inci.cpp src/NetworkSolve.cpp)
 
 target_include_directories(HydraulicNetLib PUBLIC include)   # PUBLIC to allow main.cpp to access it
 
@@ -7,7 +7,7 @@ target_link_libraries(HydraulicNetLib PUBLIC    # PUBLIC so my 'users' also link
         Eigen3::Eigen
         )
 
-add_executable(basic_tests src/inci_test.cpp src/main.cpp src/inci.cpp include/eigenData.h)
+add_executable(basic_tests src/inci_test.cpp src/main.cpp src/NetworkSolve.cpp src/inci.cpp include/eigenData.h include/NetworkSolve.h)
 target_link_libraries(basic_tests HydraulicNetLib)
 target_include_directories(basic_tests PRIVATE include)
 
