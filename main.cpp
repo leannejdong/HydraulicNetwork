@@ -105,6 +105,8 @@ int main()
     Demand_z1.setZero();
     z_loop.setZero();
     MatrixXd M = MatrixXd::Zero(8760, 7);
+    string fileName = "outputs/flowQ_test.csv";
+    std::ofstream file(fileName);
     for(int i{0}; i < demand.rows(); ++i) {
         Demand_C(i) = Demand_C(i) / 4.2 / 15;
         Demand_D(i) = Demand_D(i) / 4.2 / 15;
@@ -112,7 +114,10 @@ int main()
         Demand_F(i) = Demand_F(i) / 4.2 / 15;
         Demand_G(i) = Demand_G(i) / 4.2 / 15;
     }
-    for(int i{0}; i < /*demand.rows()*/ 3; ++i) {
+    Eigen::VectorXd m0(7);
+    m0 << 50, 50, 50, 50, 50, 50, 50;
+    double tolerance = 1e-14;
+    for(int i{0}; i < demand.rows(); ++i) {
         auto F = [&](const Eigen::VectorXd &m) {
             Eigen::VectorXd res(7);
             res << m(0) - m(1) - m(2),
@@ -141,15 +146,16 @@ int main()
        // cerr << "r u ok\n";
 
 
-        Eigen::VectorXd m0(7);
-        m0 << 50, 50, 50, 50, 50, 50, 50;
-        double tolerance = 1e-14;
+//        Eigen::VectorXd m0(7);
+//        m0 << 50, 50, 50, 50, 50, 50, 50;
+//        double tolerance = 1e-14;
         newton3d(m0, tolerance, F, DF);
          std::cout << std::setprecision(17) << "solution = " << m0<< "\n";
          std::cout << std::setprecision(17) << "error norm = " << F(m0).norm() << "\n";
 
-        saveData("outputs/flowQ_test.csv", m0.transpose());
+        saveData(file, "outputs/flowQ_test.csv", m0.transpose());
     }
+    //saveData(file, "outputs/flowQ_test.csv", m0.transpose());
 
     return 0;
 }

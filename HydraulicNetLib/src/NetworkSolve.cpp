@@ -185,7 +185,7 @@ MatrixXd calculateSoln() {
 //    return X;
 }
 
-void NetworkSolve() {
-    auto result = calculateSoln();
-    saveData("outputs/flowQ.csv", result.transpose());
-}
+//void NetworkSolve() {
+//    auto result = calculateSoln();
+//    saveData("outputs/flowQ.csv", result.transpose());
+//}
