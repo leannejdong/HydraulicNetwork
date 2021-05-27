@@ -11,46 +11,6 @@ using Eigen::VectorXd;
 
 int main()
 {
-//    //const auto [exists, s] = LoadFile();
-//    const auto s = LoadFile();
-//   // if( /*s.empty()*/!exists)
-//    if(s)
-//    {
-//        //cerr << "File [test.txt] could not be opened!\n";
-//        cerr << *s << "\n";
-//    }else{
-//        //cerr << s << "\n";
-//        cerr << "File [test.txt] could not be opened!\n";
-//    }
-// with std::optional, we need indeed just one line
-
-    // F
-//    auto F = [](const Eigen::VectorXd &m){
-//      Eigen::VectorXd res(3);
-//      res << m(0)-m(1)-2,
-//              m(1)+m(2)-3,
-//              K1 * (m(0) * abs(m(0)) + m(1) * abs(m(1))) - K3 * m(2) * abs(m(2));
-//      return res;
-//    };
-//    // jacobian of F
-//    auto DF= [] (const Eigen::VectorXd &m){
-//      Eigen::MatrixXd J(3,3);
-//      J << 1, -1, 0,
-//              0, 1, 1,
-//              2 * K1 * abs(m(0)) ,  2 * K1 * abs(m(1)),  -2 * K3 * abs(m(2));
-//      return J;
-//    };
-//
-//    Eigen::VectorXd m(3);
-//    m << 1.0, 1.0, 1.0; // initial value
-//    double tolerance = 1e-14;
-//    newton3d(m, tolerance, F, DF);
-//
-//    std::cout << std::setprecision(17) << "solution = " << m << "\n";
-//    std::cout << std::setprecision(17) << "error norm = " << F(m).norm() << "\n";
-
-
-    //NetworkSolve();
     // get incidence matrix
     cerr << LoadFile().value_or("File [network1.csv] could not be opened!") << "\n";
     ifstream in("inputs/network1.csv");
