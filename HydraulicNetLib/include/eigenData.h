@@ -6,7 +6,9 @@
 #define HYDRAULICNETWORK_EIGENDATA_H
 #include<Eigen/Dense>
 #include <fstream>
+#include <vector>
 #include <iostream>
+using std::vector;
 using Eigen::MatrixXd;
 using Eigen::IOFormat;
 using Eigen::FullPrecision;
@@ -15,6 +17,7 @@ using Eigen::Matrix;
 using Eigen::Map;
 using Eigen::Dynamic;
 using Eigen::RowMajor;
+
 
 inline void saveData(std::ofstream &file, /*std::string fileName,*/ MatrixXd  matrix)
 {
@@ -65,6 +68,8 @@ inline MatrixXd openData(std::string fileToOpen)
     return Map<Matrix<double, Dynamic, Dynamic, RowMajor>>(matrixEntries.data(), matrixRowNumber, matrixEntries.size() / matrixRowNumber);
 
 }
+
+
 
 
 #endif//HYDRAULICNETWORK_EIGENDATA_H
