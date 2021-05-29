@@ -43,7 +43,7 @@ auto newtonXd(auto &dC, auto &dD, auto &dE, auto &dF, auto &dG)
               0, 0, 0, 1, -1, 0, 0,
               0, 0, 0, 0, 1, -1, 0,
               0, 0, 0, 0, 0, 1, 1,
-              0, 0, 0, 2*K4*std::abs(m(3)), 2*K5*std::abs(m(4)), 2*K6*std::abs(m(5)), 2*K7*std::abs(m(6));
+              0, 0, 0, 2*K4*std::abs(m(3)), 2*K5*std::abs(m(4)), 2*K6*std::abs(m(5)), -2*K7*std::abs(m(6));
       return J;
     };
 
