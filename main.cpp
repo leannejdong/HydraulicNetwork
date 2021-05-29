@@ -7,7 +7,8 @@
 #include <eigenData.h>
 //#include "../include/NetworkSolve.h"
 #include "../include/newton.h"
-using Eigen::VectorXd;
+#include <fstream>
+
 
 int main()
 {
@@ -41,7 +42,7 @@ int main()
 
     vector<string> col4, col5;
     std::cerr << "the number of rows is " << data.size() << "\n";
-    for (size_t i = 0; i < data.size(); i++) {
+    for (size_t i = 0; i < data.size(); ++i) {
         // std::cerr << data[i][3];
         col4.push_back(data[i][3]);
         col5.push_back(data[i][4]);
@@ -93,68 +94,23 @@ int main()
 
     MatrixXd demand;
     demand = openData("inputs/Heating_demand.csv");
+//    MatrixXd M = MatrixXd::Zero(8760, 7);
+//    //VectorXd Func = F(M,demand);
+//    solver(M, demand);
 
-    //VectorXd Demand_z0(8760);
-    VectorXd Demand_z1(8760);
-    VectorXd Demand_C = demand.col(0);
-    VectorXd Demand_D = demand.col(1);
-    VectorXd Demand_E = demand.col(2);
-    VectorXd Demand_F = demand.col(3);
-    VectorXd Demand_G = demand.col(4);
-    VectorXd z_loop(8760);
-    Demand_z1.setZero();
-    z_loop.setZero();
-    MatrixXd M = MatrixXd::Zero(8760, 7);
-    string fileName = "outputs/flowQ_test.csv";
-    std::ofstream file(fileName);
-    for(int i{0}; i < demand.rows(); ++i) {
-        Demand_C(i) = Demand_C(i) / 4.2 / 15;
-        Demand_D(i) = Demand_D(i) / 4.2 / 15;
-        Demand_E(i) = Demand_E(i) / 4.2 / 15;
-        Demand_F(i) = Demand_F(i) / 4.2 / 15;
-        Demand_G(i) = Demand_G(i) / 4.2 / 15;
+    VectorXd Demand_C = demand.col(0)/4.2/15;
+    VectorXd Demand_D = demand.col(1)/4.2/15;
+    VectorXd Demand_E = demand.col(2)/4.2/15;
+    VectorXd Demand_F = demand.col(3)/4.2/15;
+    VectorXd Demand_G = demand.col(4)/4.2/15;
+
+    std::ofstream massflow("outputs/mflow.csv");
+    for(int i{0}; i < demand.rows(); ++i){
+        auto[m0, m1, m2, m3, m4, m5, m6] = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
+        massflow << m0 << "," << m1 << "," << m2 << "," << m3 << "," << m4 << "," << m5 << "," << m6 <<"\n";
     }
-    Eigen::VectorXd m0(7);
-    m0 << 50, 50, 50, 50, 50, 50, 50;
-    double tolerance = 1e-14;
-    for(int i{0}; i < demand.rows(); ++i) {
-        auto F = [&](const Eigen::VectorXd &m) {
-            Eigen::VectorXd res(7);
-            res << m(0) - m(1) - m(2),
-                    m(1) - Demand_C(i),
-                    m(2) - m(3) - m(6) - Demand_D(i),
-                    m(3) - m(4) - Demand_E(i),
-                    m(4) - m(5) - Demand_F(i),
-                    m(5) + m(6) - Demand_G(i),
-            K4 *m(3) * std::abs(m(3)) + K5 *m(4) * std::abs(m(4)) + K6 *m(5) * std::abs(m(5)) - K7 *m(6) * std::abs(m(6));
-            return res;
-        };
- //       cerr << "r u ok\n";
 
 
-        auto DF = [&](const Eigen::VectorXd &m) {
-            Eigen::MatrixXd J(7, 7);
-            J << 1, -1, -1, 0, 0, 0, 0,
-                    0, 1, 0, 0, 0, 0, 0,
-                    0, 0, 1, -1, 0, 0, -1,
-                    0, 0, 0, 1, -1, 0, 0,
-                    0, 0, 0, 0, 1, -1, 0,
-                    0, 0, 0, 0, 0, 1, 1,
-                    0, 0, 0, 2 * K4 * std::abs(m(3)), 2 * K5 * std::abs(m(4)), 2 * K6 * std::abs(m(5)), 2 * K7 * std::abs(m(6));
-            return J;
-        };
-       // cerr << "r u ok\n";
-
-
-//        Eigen::VectorXd m0(7);
-//        m0 << 50, 50, 50, 50, 50, 50, 50;
-//        double tolerance = 1e-14;
-        newton3d(m0, tolerance, F, DF);
-         std::cout << std::setprecision(17) << "solution = " << m0<< "\n";
-         std::cout << std::setprecision(17) << "error norm = " << F(m0).norm() << "\n";
-
-        saveData(file, "outputs/flowQ_test.csv", m0.transpose());
-    }
     //saveData(file, "outputs/flowQ_test.csv", m0.transpose());
 
     return 0;
