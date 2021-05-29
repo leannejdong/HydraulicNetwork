@@ -19,7 +19,7 @@ constexpr double K7{0.0268};
 auto newtonXd(auto &dC, auto &dD, auto &dE, auto &dF, auto &dG)
 {
     Eigen::VectorXd m(7);
-    m << 30.0, 30.0, 30.0, 30.0, 30.0, 30.0, 30.0;
+    m << 10.0, 30.0, 10.0, 10.0, 10.0, 10.0, 10.0;
     double tolerance = 1e-14;
 
     auto F = [&](const Eigen::VectorXd &m){
