@@ -5,9 +5,7 @@
 #include <string>
 #include <vector>
 #include <eigenData.h>
-//#include "../include/NetworkSolve.h"
 #include "../include/newton.h"
-#include <fstream>
 
 
 int main()
@@ -94,10 +92,8 @@ int main()
 
     MatrixXd demand;
     demand = openData("inputs/Heating_demand.csv");
-//    MatrixXd M = MatrixXd::Zero(8760, 7);
-//    //VectorXd Func = F(M,demand);
-//    solver(M, demand);
 
+    //! Obtain massflow from energy
     VectorXd Demand_C = demand.col(0)/4.2/15;
     VectorXd Demand_D = demand.col(1)/4.2/15;
     VectorXd Demand_E = demand.col(2)/4.2/15;
