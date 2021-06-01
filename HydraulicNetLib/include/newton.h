@@ -18,7 +18,8 @@ constexpr double K7{0.0268};
 
 template<typename T>
 //auto newtonXd(auto &dC, auto &dD, auto &dE, auto &dF, auto &dG)
-std::tuple<double, double, double, double, double, double, double> newtonXd(T &dC, T &dD, T &dE, T &dF, T &dG)
+//std::tuple<double, double, double, double, double, double, double> newtonXd(T &dC, T &dD, T &dE, T &dF, T &dG)
+std::vector<double> newtonXd(T &dC, T &dD, T &dE, T &dF, T &dG)
 {
     Eigen::VectorXd m(7);
     m << 10.0, 30.0, 10.0, 10.0, 10.0, 10.0, 10.0;
@@ -59,7 +60,8 @@ std::tuple<double, double, double, double, double, double, double> newtonXd(T &d
         m = m-s; // newton iteration
     } while (s.norm() > tolerance*m.norm());
 
-    return std::make_tuple(m(0), m(1), m(2), m(3), m(4), m(5), m(6));
+    //return std::make_tuple(m(0), m(1), m(2), m(3), m(4), m(5), m(6));
+    return std::vector<double>{m(0), m(1), m(2), m(3), m(4), m(5), m(6)};
 
 }
 
