@@ -1,16 +1,15 @@
-#include "inci.h"
-#include "util.h"
+#include <exception>
 #include <iostream>
-#include <optional>
+//#include <optional>
 #include <string>
 #include <vector>
-#include <eigenData.h>
-#include "../include/newton.h"
-
+#include "../include/inci.h"
+#include "../include/util.h"
+#include "../include/NetworkSolve.h"
 
 int main()
 {
-    // get incidence matrix
+    //! get incidence matrix
     cerr << LoadFile().value_or("File [network1.csv] could not be opened!") << "\n";
     ifstream in("inputs/network1.csv");
     vector<vector<string>> data;
@@ -32,7 +31,7 @@ int main()
         }
         cerr << "\n";
     }
-    // define the number of Nodes and Pipes
+    //! define the number of Nodes and Pipes
     const size_t n = stoi(data[0][0]);
     const size_t m = stoi(data[0][1]);
     //    std::cerr << "the number of nodes is " << n << "\n";
@@ -53,7 +52,7 @@ int main()
     for (auto c4 : col4) {
         col4_int.push_back(stoi(c4));
     }
-    // c++ index from 0, so subtract 1 from each element of our vector
+    //! c++ index from 0, so subtract 1 from each element of our vector
     for (auto &e4 : col4_int) {
         e4 -= 1;
     }
@@ -89,26 +88,32 @@ int main()
     cerr << "The matrix -A^T is \n"
          << A_tran << "\n";
 
-
-    MatrixXd demand;
-    demand = openData("inputs/Heating_demand.csv");
-
-    //! Obtain massflow from energy
-    VectorXd Demand_C = demand.col(0)/4.2/15;
-    VectorXd Demand_D = demand.col(1)/4.2/15;
-    VectorXd Demand_E = demand.col(2)/4.2/15;
-    VectorXd Demand_F = demand.col(3)/4.2/15;
-    VectorXd Demand_G = demand.col(4)/4.2/15;
-
-    std::ofstream massflow("outputs/mflow.csv");
-    massflow << "m1," << "m2," << "m3," << "m4," << "m5," << "m6," << "m7\n";
-    for(int i{0}; i < demand.rows(); ++i){
-        auto[m0, m1, m2, m3, m4, m5, m6] = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
-        massflow << m0 << "," << m1 << "," << m2 << "," << m3 << "," << m4 << "," << m5 << "," << m6 <<"\n";
+    try {
+        NetworkSolve();
+    } catch (const std::exception &exception) {
+        std::cerr << exception.what() << '\n';
+        throw;
+//    MatrixXd demand;
+//    demand = openData("inputs/Heating_demand.csv");
+//
+//    //! Obtain massflow from energy
+//    VectorXd Demand_C = demand.col(0)/4.2/15;
+//    VectorXd Demand_D = demand.col(1)/4.2/15;
+//    VectorXd Demand_E = demand.col(2)/4.2/15;
+//    VectorXd Demand_F = demand.col(3)/4.2/15;
+//    VectorXd Demand_G = demand.col(4)/4.2/15;
+//
+//    std::ofstream massflow("outputs/mflow.csv");
+//    massflow << "m1," << "m2," << "m3," << "m4," << "m5," << "m6," << "m7\n";
+//    for(int i{0}; i < demand.rows(); ++i){
+//        auto[m0, m1, m2, m3, m4, m5, m6] = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
+//        massflow << m0 << "," << m1 << "," << m2 << "," << m3 << "," << m4 << "," << m5 << "," << m6 <<"\n";
+//    }
     }
 
 
-    //saveData(file, "outputs/flowQ_test.csv", m0.transpose());
+
+
 
     return 0;
 }

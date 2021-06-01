@@ -10,6 +10,7 @@
 #include <iostream>
 using std::vector;
 using Eigen::MatrixXd;
+using Eigen::VectorXd;
 using Eigen::IOFormat;
 using Eigen::FullPrecision;
 using std::vector;
@@ -69,7 +70,19 @@ inline MatrixXd openData(std::string fileToOpen)
 
 }
 
+inline VectorXd makeEigenVectorFromVectors(const vector<double> &vecvalues)
+{
+    size_t n = vecvalues.size();
+    VectorXd b(n);
 
+    for (size_t i = 0; i < n; ++i)
+    {
+        b(i) = vecvalues[i];
+    }
+
+    return b;
+
+}
 
 
 #endif//HYDRAULICNETWORK_EIGENDATA_H
