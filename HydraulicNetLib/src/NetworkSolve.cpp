@@ -21,7 +21,7 @@ void NetworkSolve()
     std::ofstream massflow("outputs/mflow.csv");
     massflow << "m1," << "m2," << "m3," << "m4," << "m5," << "m6," << "m7\n";
     for(int i{0}; i < demand.rows(); ++i) {
-        auto [m0, m1, m2, m3, m4, m5, m6] = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
+        const auto [m0, m1, m2, m3, m4, m5, m6] = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
         massflow << m0 << "," << m1 << "," << m2 << "," << m3 << "," << m4 << "," << m5 << "," << m6 << "\n";
     }
 

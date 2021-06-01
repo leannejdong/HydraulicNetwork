@@ -16,7 +16,9 @@ constexpr double K7{0.0268};
 #ifndef HYDRAULICNETWORK_NEWTON_H
 #define HYDRAULICNETWORK_NEWTON_H
 
-auto newtonXd(auto &dC, auto &dD, auto &dE, auto &dF, auto &dG)
+template<typename T>
+//auto newtonXd(auto &dC, auto &dD, auto &dE, auto &dF, auto &dG)
+std::tuple<double, double, double, double, double, double, double> newtonXd(T &dC, T &dD, T &dE, T &dF, T &dG)
 {
     Eigen::VectorXd m(7);
     m << 10.0, 30.0, 10.0, 10.0, 10.0, 10.0, 10.0;
