@@ -8,10 +8,7 @@
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::cerr;
-constexpr double K4{0.0268};
-constexpr double K5{0.0064};
-constexpr double K6{0.0021};
-constexpr double K7{0.0268};
+
 constexpr double mu{0.294e-6};
 constexpr double rho{997};
 constexpr double friction{0};
@@ -25,50 +22,8 @@ template<typename T>
 std::vector<double> newtonXd(T &dC, T &dD/*, T &dE, T &dF, T &dG*/)
 {
 
-    MatrixXd B_mat/*, Loop_info, Network_info*/;
-    std::vector<std::pair<std::string, std::vector<double>>> Network_info, Loop_info;
-    Network_info = read_csv("inputs/Network_info.csv");
-
-    int N = (int)Network_info[0].second[0]; /// number of nodes
-    int M = (int)Network_info[1].second[0]; /// number of pipes
-
-    vector<double> in = Network_info[3].second;
-    vector<double> out = Network_info[4].second;
-
-//    int src = Network_info(1, 5);
-    int src = Network_info[5].second[0];
-
-    VectorXd mass_flow(M);
-    mass_flow << 10.0, 10.0, 10.0;
-    std::vector<double> errors;
-    double tolerance = 1e-14;
-
-
+    MatrixXd B_mat;
     B_mat = openData("inputs/Loops_Liu.csv");
-//    Loop_info = read_csv("inputs/Pipes_info.csv");
-//    std::vector<double> lengths, diameters, roughness;
-//    lengths = Loop_info[1].second;
-//    diameters = Loop_info[2].second;
-//    roughness = Loop_info[3].second;
-//    double initial_guess = Loop_info[4].second[0];
-
-
-//    VectorXd reynolds(M), f(M), head(M);
-//    int l = 1;
-//    MatrixXd resistance; resistance(l, M);
-//
-//
-//    for(int i = 0; i < 3; ++i){
-//        reynolds(i) = 4*mass_flow(i)/mu/rho/diameters[i];
-//        if(reynolds(i) < 2300){
-//            f(i) = 64/reynolds(i);
-//        } else {
-//            f(i) = pow((1/-1.8/ log10((6.9/reynolds(i)) + roughness[i]/(diameters[i]/3.7))),2);
-//        }
-//        head(i) = 8*f(i)*lengths[i]/pow(diameters[i],5)/pow(rho, 2)/pow(PI,2)/9.81;
-//    }
-
-
 
     auto F = [&](const Eigen::VectorXd &m){
       Eigen::VectorXd res(3);

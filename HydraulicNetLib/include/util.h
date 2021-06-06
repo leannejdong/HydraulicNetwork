@@ -115,4 +115,13 @@ inline void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
 
     matrix.conservativeResize(numRows,numCols);
 }
+template <typename T>
+vector<vector<T>> mat_tran(const vector<vector<T>> &mat){
+    vector<vector<T>> res;
+    for(size_t i = 0; i< res.size(); ++i){
+        for(size_t j = 0; j < res[i].size(); ++j){
+            res[i][j] = - mat[j][i];
+        }
+    }
+}
 #endif//HYDRAULICNETWORK_UTIL_H
