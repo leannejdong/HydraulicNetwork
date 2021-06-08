@@ -1,8 +1,9 @@
 # Hydraulic Network Library 
 (under development)
 
-We start writing a C++ library for solving nonlinear hydraulic network.
+We are writing a C++ library for solving nonlinear hydraulic network.
 
+<!---
 ## Completed:
   
 * Parse CSV data into integer multidimensional arrays
@@ -33,6 +34,8 @@ We start writing a C++ library for solving nonlinear hydraulic network.
 ```
 57.5494,25.424,32.1254,13.9795,2.43297,-10.9734,13.6895
 ```
+--->
+
 
 ## Build Instruction
 
