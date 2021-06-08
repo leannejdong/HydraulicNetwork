@@ -5,7 +5,6 @@
 
 int main()
 {
-
     try {
         NetworkSolve();
     } catch (const std::exception &exception) {
@@ -13,7 +12,5 @@ int main()
         throw;
 
     }
-
-
     return 0;
 }

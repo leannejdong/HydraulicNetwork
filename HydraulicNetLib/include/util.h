@@ -105,16 +105,6 @@ inline MatrixXd makeEigenMatrixFromVectors(const vector<vector<T>> &matvalues)
     return A;
 }
 
-inline void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
-{
-    unsigned int numRows = matrix.rows()-1;
-    unsigned int numCols = matrix.cols();
-
-    if( rowToRemove < numRows )
-        matrix.block(rowToRemove,0,numRows-rowToRemove,numCols) = matrix.block(rowToRemove+1,0,numRows-rowToRemove,numCols);
-
-    matrix.conservativeResize(numRows,numCols);
-}
 template <typename T>
 vector<vector<T>> mat_tran(const vector<vector<T>> &mat){
     vector<vector<T>> res;
@@ -123,5 +113,9 @@ vector<vector<T>> mat_tran(const vector<vector<T>> &mat){
             res[i][j] = - mat[j][i];
         }
     }
+}
+
+inline void MultiplyVectorByScalar(vector<double> &v, auto k1, auto k2){
+    std::transform(v.begin(), v.end(), v.begin(),[k1, k2](double &c){ return c/4.2/(k2 - k1); });
 }
 #endif//HYDRAULICNETWORK_UTIL_H

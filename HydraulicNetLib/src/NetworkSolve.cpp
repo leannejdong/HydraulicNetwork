@@ -2,54 +2,23 @@
 #include "Data.h"
 #include "util.h"
 //#include "newton.h"
-#include <range/v3/view.hpp>
+//#include <range/v3/view.hpp>
 #include <typeinfo>
 #include <fstream>
 #include <string>
 #include <vector>
 #include "../include/inci.h"
 #include "../include/util.h"
+#include <algorithm>
+#include <cstdlib>
 
 using Eigen::VectorXd;
 
 void NetworkSolve()
 {
-    MatrixXd demand;
-    demand = openData("inputs/Heating_demand_Liu.csv");
-
-    //! Obtain massflow from energy
-    VectorXd Demand_C = demand.col(0)/4.2/15;
-    VectorXd Demand_D = demand.col(1)/4.2/15;
-//    VectorXd Demand_E = demand.col(2)/4.2/15;
-//    VectorXd Demand_F = demand.col(3)/4.2/15;
-//    VectorXd Demand_G = demand.col(4)/4.2/15;
-
-//    std::ofstream massflow("outputs/mflowLiu.csv");
-//    massflow << "m1," << "m2," << "m3\n";
-//    for(int i{0}; i < demand.rows(); ++i) {
-//        //onst auto [m0, m1, m2, m3, m4, m5, m6] = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
-//        std::vector<double> solnVec = newtonXd(Demand_C(i), Demand_D(i)/*, Demand_E(i), Demand_F(i), Demand_G(i)*/);
-//        //massflow << m0 << "," << m1 << "," << m2 << "," << m3 << "," << m4 << "," << m5 << "," << m6 << "\n";
-//        for(auto&s : solnVec){
-//            massflow << s << "," ;
-//        }
-//        massflow << "\n";
-
-
-
             //! get incidence matrix
     cerr << LoadFile().value_or("File [Network_info.csv] could not be opened!") << "\n";
 
-//    std::vector<std::pair<std::string, std::vector<double>>> Network_info, Loop_info;
-//        Network_info = read_csv("inputs/Network_info.csv");
-//
-//    const size_t N = (int)Network_info[0].second[0]; /// number of nodes
-//    const size_t M = (int)Network_info[1].second[0]; /// number of pipes
-//
-//    vector<double> in = Network_info[3].second;
-//    vector<double> out = Network_info[4].second;
-//
-//    int src = Network_info[5].second[0];
     std::ifstream nw("inputs/Network_info.csv");
     vector<vector<string>> data;
     string line, word;
@@ -120,41 +89,106 @@ void NetworkSolve()
     printMat(matA);
    // vector<vector<int>> matA_t = mat_tran(matA);
     // vector<vector<int>> A = outputReduceMat(matA);
-    MatrixXd A = makeEigenMatrixFromVectors(matA);
+    MatrixXd A_eigen = makeEigenMatrixFromVectors(matA);
     cerr << "The matrix A is \n"
-         << A << "\n";
-    MatrixXd A_t = -A.transpose();
+         << A_eigen << "\n";
+    MatrixXd A_eigen_t = -A_eigen.transpose();
 
-    removeRow(A_t, 2);
-    cerr << "The final matrix -A^T is \n"
-         << A_t << "\n";
-//        VectorXd mass_flow(M);
-//        mass_flow << 10.0, 10.0, 10.0;
-//        std::vector<double> errors;
-//        double tolerance = 1e-14;
-//    Loop_info = read_csv("inputs/Pipes_info.csv");
-//    std::vector<double> lengths, diameters, roughness;
-//    lengths = Loop_info[1].second;
-//    diameters = Loop_info[2].second;
-//    roughness = Loop_info[3].second;
-//    double initial_guess = Loop_info[4].second[0];
+    removeRow(A_eigen_t, 2);
+    cerr << "The Eigen version of the final matrix -A^T is \n"
+         << A_eigen_t << "\n";
 
 
-//    VectorXd reynolds(M), f(M), head(M);
-//    int l = 1;
-//    MatrixXd resistance; resistance(l, M);
+    vector<int> consumers{1, 2};
+    //consumers << 1, 2;
+    constexpr double setpoint_T{25};
+    constexpr double inlet_T{40};
+
+    MatrixXd demand_data, demands;
+    demand_data = openData("inputs/Heating_demand_Liu.csv");
+    demands = demand_data/4.2/(inlet_T - setpoint_T);
+
+    //VectorXd external_flow(n); //?
+    vector<double> external_flow(n);
+
+    MatrixXd Loop_info;
+    Loop_info = openData("inputs/Pipes_info.csv");
+//    removeRow(Loop_info, 0);
+//    removeColumn(Loop_info, 0);
+
+    VectorXd lengths = Loop_info.col(0);
+    VectorXd diameters = Loop_info.col(1);
+    VectorXd roughness = Loop_info.col(2);
+
+    double initial_guess = /*Loop_info(0,3);*/ 1;
+    VectorXd mass_flow(m);
+    mass_flow.setConstant(initial_guess);
+
+    for(size_t i{0}; i < consumers.size(); ++i){
+        for(size_t j{0}; j < n; ++j){
+            if(consumers[i]-1 == j){
+                external_flow[j] = demands(0,i);
+            }
+        }
+    }
+    external_flow.erase(external_flow.begin()+2);
+
+    // how to do external_flow(3)=[];?
+    VectorXd reynolds(m);
+    reynolds.setZero();
+    VectorXd f(m);
+    f.setZero();
+    VectorXd head(m);
+    head.setZero();
+
+    const double tolerance = 1e-14;
+    constexpr int l = 1;
+
+    MatrixXd resistance(l, m);
+    MatrixXd F22(l, m);
+    int sum = 0; double err = 100;
+    VectorXd F2(l);
+    F2.setZero();
+    MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
+    MatrixXd B_mat = openData("inputs/Loops_Liu.csv");
+    constexpr double mu = 0.294e-6;
+    constexpr double rho = 997;
 //
 //
-//    for(int i = 0; i < 3; ++i){
-//        reynolds(i) = 4*mass_flow(i)/mu/rho/diameters[i];
-//        if(reynolds(i) < 2300){
-//            f(i) = 64/reynolds(i);
-//        } else {
-//            f(i) = pow((1/-1.8/ log10((6.9/reynolds(i)) + roughness[i]/(diameters[i]/3.7))),2);
-//        }
-//        head(i) = 8*f(i)*lengths[i]/pow(diameters[i],5)/pow(rho, 2)/pow(PI,2)/9.81;
-//    }
+    std::ofstream output_mass_flow("outputs/mflowLiu_new");
+    output_mass_flow << "m1," << "m2," << "m3\n";
+    while(err > tolerance){
+        for(int i = 0; i < 3; ++i){
+            reynolds(i) = 4*mass_flow(i)/mu/rho/diameters(i);
+            if(reynolds(i) < 2300){
+                f(i) = 64/reynolds(i);
+            } else {
+                f(i) = pow((1/-1.8/ log10((6.9/reynolds(i)) + roughness(i)/(diameters(i)/3.7))),2);
+            }
+            head(i) = 8*f(i)*lengths(i)/pow(diameters(i),5)/pow(rho, 2)/pow(M_PI,2)/9.81;
+        }
+        for(int i = 0; i < l; ++i){
+            for(size_t j = 0; j < m; ++j){
+                resistance(i, j) = 2*B_mat(i, j)*head(j)*mass_flow(j);
+                F22(i, j) = B_mat(i, j)*head(j)*mass_flow(j)*std::abs(mass_flow(j));
+                sum += F22(i, j);
+            }
+            F2(i) = sum;
+        }
 
-//    }
+        jacob << A_eigen_t, resistance;
+        VectorXd F1(A_eigen_t.rows());
+        F1 = A_eigen_t * mass_flow - Eigen::VectorXd::Map(external_flow.data(), external_flow.size());
+        VectorXd F(A_eigen_t.rows()+1);
+        F << F1, F2;
+        VectorXd mass_flow_new(m);
+        mass_flow_new = mass_flow - jacob.inverse() * F;
+        err = (mass_flow_new - mass_flow).norm()/mass_flow.norm();
+        mass_flow = mass_flow_new;
+
+
+        saveData(output_mass_flow, mass_flow);
+        cerr << mass_flow << " End\n";
+    }
 
 }

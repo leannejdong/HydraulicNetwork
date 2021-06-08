@@ -14,6 +14,7 @@ using Eigen::VectorXd;
 using Eigen::IOFormat;
 using Eigen::FullPrecision;
 using std::vector;
+using std::pair;
 using Eigen::Matrix;
 using Eigen::Map;
 using Eigen::Dynamic;
@@ -79,9 +80,25 @@ inline VectorXd makeEigenVectorFromVectors(const vector<double> &vecvalues)
     {
         b(i) = vecvalues[i];
     }
-
     return b;
+}
 
+inline vector<vector<double>> makeMariceFromEigen(const MatrixXd &matvalues)
+{
+    size_t n_rows = matvalues.rows();
+    size_t n_cols = matvalues.cols();
+    vector<vector<double>> A(n_rows, vector<double> (n_cols, 0));
+
+    for (size_t i = 0; i!= n_rows; ++i)
+    {
+        //assert(matvalues.col(i).size() == n_cols);
+
+        for (size_t j = 0; j!= n_cols; ++j)
+        {
+            A[i][j] = matvalues(i, j);
+        }
+    }
+    return A;
 }
 
 inline std::vector<std::pair<std::string, std::vector<double>>> read_csv(std::string filename){
@@ -148,5 +165,25 @@ inline std::vector<std::pair<std::string, std::vector<double>>> read_csv(std::st
     return result;
 }
 
+void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
+{
+    unsigned int numRows = matrix.rows()-1;
+    unsigned int numCols = matrix.cols();
 
+    if( rowToRemove < numRows )
+        matrix.block(rowToRemove,0,numRows-rowToRemove,numCols) = matrix.block(rowToRemove+1,0,numRows-rowToRemove,numCols);
+
+    matrix.conservativeResize(numRows,numCols);
+}
+
+void removeColumn(Eigen::MatrixXd& matrix, unsigned int colToRemove)
+{
+    unsigned int numRows = matrix.rows();
+    unsigned int numCols = matrix.cols()-1;
+
+    if( colToRemove < numCols )
+        matrix.block(0,colToRemove,numRows,numCols-colToRemove) = matrix.block(0,colToRemove+1,numRows,numCols-colToRemove);
+
+    matrix.conservativeResize(numRows,numCols);
+}
 #endif//HYDRAULICNETWORK_EIGENDATA_H
