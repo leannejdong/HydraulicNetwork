@@ -104,10 +104,12 @@ VectorXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
         err = (mass_flow_new - mass_flow).norm()/mass_flow.norm();
         mass_flow = mass_flow_new;
 
-        saveData(output_mass_flow, mass_flow);
+        saveData(output_mass_flow, mass_flow.transpose());
 
-        //cerr << mass_flow << " End\n";
+        cerr << "The solutions are : \n";
+        cerr << mass_flow.transpose() << "\n";
     }
+
     return mass_flow;//std::vector<double>{mass_flow(0), mass_flow(1), mass_flow(2)};
 
 

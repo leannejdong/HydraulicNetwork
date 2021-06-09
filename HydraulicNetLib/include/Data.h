@@ -31,6 +31,7 @@ inline void saveData(std::ofstream &file, /*std::string fileName,*/ MatrixXd  ma
     {
         file << matrix.format(CSVFormat) <<"\n";
     }
+
 }
 
 inline MatrixXd openData(std::string fileToOpen)
@@ -101,6 +102,18 @@ inline vector<vector<double>> makeMariceFromEigen(const MatrixXd &matvalues)
     return A;
 }
 
+inline std::vector<double> makeVectorsFromEigen(const VectorXd &vecvalues)
+{
+    using std::vector;
+    size_t n = vecvalues.size();
+    vector<double> b(n);
+    for (size_t i = 0; i < n; ++i)
+    {
+        b[i] = vecvalues(i);
+    }
+    return b;
+}
+
 inline std::vector<std::pair<std::string, std::vector<double>>> read_csv(std::string filename){
     // Reads a CSV file into a vector of <string, vector<int>> pairs where
     // each pair represents <column name, column values>
@@ -165,7 +178,33 @@ inline std::vector<std::pair<std::string, std::vector<double>>> read_csv(std::st
     return result;
 }
 
-void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
+inline void write_csv(std::string filename, std::vector<double> dataset) {
+
+    // Create an output filestream object
+    std::ofstream myFile(filename);
+
+    // Send column names to the stream
+    for(size_t j = 0; j < dataset.size(); ++j)
+    {
+        //myFile << dataset.at(j).first;
+        if(j != dataset.size() - 1) myFile << ","; // No comma at end of line
+    }
+    myFile << "\n";
+
+    // Send data to the stream
+    for(size_t i = 0; i < dataset.size(); ++i)
+    {
+        for(size_t j = 0; j < dataset.size(); ++j)
+        {
+            myFile << dataset.at(j);
+            if(j != dataset.size() - 1) myFile << ","; // No comma at end of line
+        }
+        myFile << "\n";
+    }
+}
+
+
+inline void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
 {
     unsigned int numRows = matrix.rows()-1;
     unsigned int numCols = matrix.cols();
@@ -176,7 +215,7 @@ void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
     matrix.conservativeResize(numRows,numCols);
 }
 
-void removeColumn(Eigen::MatrixXd& matrix, unsigned int colToRemove)
+inline void removeColumn(Eigen::MatrixXd& matrix, unsigned int colToRemove)
 {
     unsigned int numRows = matrix.rows();
     unsigned int numCols = matrix.cols()-1;
