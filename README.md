@@ -1,7 +1,7 @@
 # Hydraulic Network Library 
 (under development)
 
-We are writing a C++ library for solving nonlinear hydraulic network.
+We are writing a C++ library to perform hydraulic and thermal calculations for nonlinear hydraulic network.
 
 <!---
 ## Completed:
