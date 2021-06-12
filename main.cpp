@@ -6,7 +6,7 @@
 #include "../include/inci.h"
 #include "../include/util.h"
 #include "../include/NetworkSolve.h"
-
+#include "../include/graph.h"
 using Pair = std::vector<std::pair<int, int>>;
 int main()
 {
@@ -90,19 +90,35 @@ int main()
          << A_tran << "\n";
     /// Loop detection
     /// First we need adjacency matrix
-
     Pair V;
     for(size_t i{0}; i < col4_int.size(); ++i)
     {
         V.emplace_back(col4_int[i], col5_int[i]);
     }
-    matrix adj(7);
-    for(auto &v : V)
-    {
-        addEdge(adj, v.first, v.second);
+//    matrix adj(n);
+//    for(auto &v : V)
+//    {
+//        adj.addEdge(adj, v.first, v.second);
+//    }
+    graph g(7);
+    for(auto &v : V){
+        g.addEdge(v.first, v.second);
     }
+
     cerr << "Print adjacency matrix: " << "\n";
-    displayMatrix(adj);
+    g.printMat();
+
+    /// apply gotlieb algorithm to detect loops
+    std::vector<int> cycles;
+    /// find cycles from the  adjacency matrix
+    /// convert the matrix type adj to double vector
+//    vector<vector<int>> adjVec = convertMatrix(adj);
+//    adj.displayMatrixVec(adjVec);
+    g.Gotlieb123(std::back_inserter(cycles));
+    std::ofstream of("cycles.data");
+    std::cout << "Print Cycles " << "\n";
+    print_cycles(std::begin(cycles), std::end(cycles), std::cout);
+    print_cycles(std::begin(cycles), std::end(cycles), of);
 
     cerr << "Solving for mass flows: " << "\n";
 

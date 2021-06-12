@@ -127,26 +127,53 @@ struct matrix
 
     int size() const noexcept { return size_; }
 
+    void addEdge(matrix &adj, int u, int v)
+    {
+        adj(u, v) += 1;
+        adj(v, u) += 1;
+    }
+
+    void displayMatrix(matrix const& adj)
+    {
+        for(/*std::size_t*/ int i = 0; i < adj.size(); i++)
+        {
+            for(/*std::size_t*/int j = 0; j < adj.size(); j++)
+            {
+                std::cerr << adj(i,j) << "  ";
+            }
+            std::cerr << "\n";
+        }
+    }
+
+    void displayMatrixVec(vector<vector<int>> const& adj)
+    {
+        for(const auto& row : adj){
+            for(const auto&s : row){
+                std::cerr << s << " ";
+            }
+            std::cerr << "\n";
+        }
+    }
+
 private:
     std::vector<int> storage_;
     int size_;
 };
 
-static void addEdge(matrix &adj, int u, int v)
-{
-    adj(u, v) += 1;
-    adj(v, u) += 1;
-}
 
-static void displayMatrix(matrix const& inc)
-{
-    for(/*std::size_t*/ int i = 0; i < inc.size(); i++)
+
+inline vector<vector<int>> convertMatrix(matrix const& adj){
+    //vector<vector<int>> matrixVec(7);
+    vector<vector<int>> matrixVec(adj.size(), vector<int> (adj.size(), 0));
+
+    for(int i = 0; i < adj.size(); i++)
     {
-        for(/*std::size_t*/int j = 0; j < inc.size(); j++)
+        for(int j = 0; j < adj.size(); j++)
         {
-            std::cerr << inc(i,j) << "  ";
+            matrixVec[i][j] = adj(i,j);
         }
-        std::cerr << "\n";
+        std::cout << "\n";
     }
+    return matrixVec;
 }
 #endif//HYDRAULICNETWORK_UTIL_H
