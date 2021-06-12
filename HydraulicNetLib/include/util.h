@@ -115,4 +115,38 @@ inline void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
 
     matrix.conservativeResize(numRows,numCols);
 }
+
+struct matrix
+{
+    matrix(int r) : storage_(r*r), size_(r) {}
+
+    int& operator()(int i, int j)       noexcept {
+        // std::cerr << "i= " << i << "and j= " << j << " and size_ =" << size_ << "\n";
+        return storage_[i + size_*(j)]; }
+    const int&  operator()(int i, int j) const noexcept { return storage_[i + size_*(j)]; }
+
+    int size() const noexcept { return size_; }
+
+private:
+    std::vector<int> storage_;
+    int size_;
+};
+
+static void addEdge(matrix &adj, int u, int v)
+{
+    adj(u, v) += 1;
+    adj(v, u) += 1;
+}
+
+static void displayMatrix(matrix const& inc)
+{
+    for(/*std::size_t*/ int i = 0; i < inc.size(); i++)
+    {
+        for(/*std::size_t*/int j = 0; j < inc.size(); j++)
+        {
+            std::cerr << inc(i,j) << "  ";
+        }
+        std::cerr << "\n";
+    }
+}
 #endif//HYDRAULICNETWORK_UTIL_H
