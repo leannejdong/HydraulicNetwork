@@ -135,9 +135,9 @@ struct matrix
 
     void displayMatrix(matrix const& adj)
     {
-        for(/*std::size_t*/ int i = 0; i < adj.size(); i++)
+        for(/*std::size_t*/ int i = 0; i < adj.size(); ++i)
         {
-            for(/*std::size_t*/int j = 0; j < adj.size(); j++)
+            for(/*std::size_t*/int j = 0; j < adj.size(); ++j)
             {
                 std::cerr << adj(i,j) << "  ";
             }
