@@ -15,18 +15,16 @@ using std::cerr;
 constexpr double mu{4.04e-04};
 constexpr double rho{980};
 constexpr double PI{3.14159265};
+const double tolerance = 1e-14;
+constexpr int l = 1;
 #ifndef HYDRAULICNETWORK_NEWTON_H
 #define HYDRAULICNETWORK_NEWTON_H
 
 MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eigen_t, const size_t n, const size_t m)
 {
     MatrixXd final_mass_flow= MatrixXd::Zero(demands.col(0).size(), m);
-    //std::cout << final_mass_flow << "\n";
 
     demands = demands*rho/3600;
-
-
-    //VectorXd external_flow(n); //?
 
     MatrixXd Loop_info;
     Loop_info = openData("inputs/Pipes_information.csv");
@@ -45,7 +43,7 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
     for(int k{0}; k < demands.col(0).size(); ++k){
 
         vector<double> external_flow(n);
-
+/// Assigning node with proper external mass flow rate
         for(size_t i{0}; i < consumers.size(); ++i){
             for(size_t j{0}; j < n; ++j){
                 if(consumers[i] - 1 == j){
@@ -57,7 +55,7 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
         external_flow.erase(external_flow.begin(), external_flow.begin()+2);
     //    printVec(external_flow);
 
-
+/// Initialize all array object to calculate mass flow rate
         MatrixXd B_mat;
         B_mat = openData("inputs/Loops.csv");
 
@@ -68,10 +66,6 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
         // f.setZero();
         VectorXd head = VectorXd::Zero(m);
         // head.setZero();
-
-        const double tolerance = 1e-14;
-        constexpr int l = 1;
-
 
         MatrixXd resistance(l, m);
         MatrixXd F22(l, m);
@@ -89,12 +83,10 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
                     f(i) = pow((1/-1.8/ log10((6.9/reynolds(i)) + pow(roughness(i)/(diameters(i)/3.7),1.11))    ),2);
                 }
                 head(i) = 8*f(i)*lengths(i)/pow(diameters(i),5)/pow(rho, 2)/pow(PI,2)/9.81;
-            }
+            } // if the loop matrix is 0, the network is linear
             if(B_mat.isZero(0.0)) {
                 VectorXd F(A_eigen_t.rows() + resistance.rows());
-
                 F = A_eigen_t * mass_flow - Eigen::VectorXd::Map(external_flow.data(), external_flow.size() + 1);
-                //  std::cout << F << "\n";
                 mass_flow_new = mass_flow - A_eigen_t.inverse() * F;
                 err = (mass_flow_new - mass_flow).norm() / mass_flow.norm();
                 mass_flow = mass_flow_new;
@@ -129,7 +121,7 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
 
     }
 
-    return final_mass_flow;//std::vector<double>{mass_flow(0), mass_flow(1), mass_flow(2)};
+    return final_mass_flow;
 
 
 }
