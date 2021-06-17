@@ -103,9 +103,6 @@ void NetworkSolve()
 
 
     vector<double> consumers{3, 4};
-    //consumers << 1, 2;
-//    constexpr double setpoint_T{25};
-//    constexpr double inlet_T{40};
 
     /*! Parse csv as Eigen matrix formatted objects */
     MatrixXd demands = openData("inputs/Demand_loads.csv");

@@ -75,7 +75,7 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
         MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
 
         while(err > tolerance){
-            for(size_t i = 0; i < m; ++i){
+            for(size_t i = 0; i < m; ++i){  // calculate friction
                 reynolds(i) = 4*mass_flow(i)/mu/rho/diameters(i);
                 if(reynolds(i) < 2300){
                     f(i) = 64/reynolds(i);
@@ -86,7 +86,7 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
             } // if the loop matrix is 0, the network is linear
             if(B_mat.isZero(0.0)) {
                 VectorXd F(A_eigen_t.rows() + resistance.rows());
-                F = A_eigen_t * mass_flow - Eigen::VectorXd::Map(external_flow.data(), external_flow.size() + 1);
+                F = A_eigen_t * mass_flow - Eigen::VectorXd::Map(external_flow.data(), external_flow.size() + 1);// F depends on conservation of mass and pressure
                 mass_flow_new = mass_flow - A_eigen_t.inverse() * F;
                 err = (mass_flow_new - mass_flow).norm() / mass_flow.norm();
                 mass_flow = mass_flow_new;
