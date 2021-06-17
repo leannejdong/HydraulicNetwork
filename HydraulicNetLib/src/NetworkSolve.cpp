@@ -14,13 +14,15 @@
 
 using Eigen::VectorXd;
 
+
+
 void NetworkSolve()
 {
 
     //! get incidence matrix
-    cerr << LoadFile().value_or("File [Network_info.csv] could not be opened!") << "\n";
+    cerr << LoadFile().value_or("File [Network_information.csv] could not be opened!") << "\n";
 
-    std::ifstream nw("inputs/Network_info.csv");
+    std::ifstream nw("inputs/Network_information.csv");
     vector<vector<string>> data;
     string line, word;
 
@@ -47,7 +49,7 @@ void NetworkSolve()
     std::cerr << "the number of pipes is " << m << "\n";
 
     vector<string> col4, col5;
-    std::cerr << "the number of rows is " << data.size() << "\n";
+    std::cerr << "the number of columns is " << data.size() << "\n";
     for (size_t i = 1; i < data.size(); ++i) {
         // std::cerr << data[i][3];
         col4.push_back(data[i][3]);
@@ -91,27 +93,32 @@ void NetworkSolve()
     // vector<vector<int>> matA_t = mat_tran(matA);
     // vector<vector<int>> A = outputReduceMat(matA);
     MatrixXd A_eigen = makeEigenMatrixFromVectors(matA);
-    cerr << "The matrix A is \n"
+    cerr << "The Eigen version of matrix A is \n"
          << A_eigen << "\n";
     MatrixXd A_eigen_t = -A_eigen.transpose();
 
-    removeRow(A_eigen_t, 2);
+    removeRow(A_eigen_t, 0);
     cerr << "The Eigen version of the final matrix -A^T is \n"
          << A_eigen_t << "\n";
 
 
-    vector<double> consumers{1, 2};
+    vector<double> consumers{3, 4};
     //consumers << 1, 2;
-    constexpr double setpoint_T{25};
-    constexpr double inlet_T{40};
+//    constexpr double setpoint_T{25};
+//    constexpr double inlet_T{40};
 
     MatrixXd demand_data, demands;
-    demand_data = openData("inputs/Heating_demand_Liu.csv");
-    demands = demand_data/4.2/(inlet_T - setpoint_T);
+    demand_data = openData("inputs/Demand_loads.csv");
+    demands = demand_data;
+   // std::cerr << demands.col(0).size() << "\n";
 
-    std::ofstream output_mass_flow("outputs/mflowLiu_new");
+    std::ofstream output_mass_flow("outputs/mflowLiu_1606.csv");
     output_mass_flow << "m1," << "m2," << "m3\n";
-    VectorXd solution = newtonXd(demands, consumers, A_eigen_t, n, m);
+    MatrixXd solution = MatrixXd::Zero(demands.col(0).size(), m);
+    solution = newtonXd(demands, consumers, A_eigen_t, n, m);
+    saveData(output_mass_flow, solution);
+
+
 
 
 }
