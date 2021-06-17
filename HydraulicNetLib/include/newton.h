@@ -26,6 +26,8 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
     demands = demands*rho/3600;
 
 
+    //VectorXd external_flow(n); //?
+
     MatrixXd Loop_info;
     Loop_info = openData("inputs/Pipes_information.csv");
 //    removeRow(Loop_info, 0);
@@ -40,9 +42,6 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
     mass_flow.setConstant(initial_guess);
     VectorXd mass_flow_new = VectorXd::Zero(m);
 
-    // cerr << "number of demand rows " << demands.col(0).size() <<"\n";
-//    std::ofstream output_mass_flow("outputs/mflowLiu_1606");
-//    output_mass_flow << "m1," << "m2," << "m3\n";
     for(int k{0}; k < demands.col(0).size(); ++k){
 
         vector<double> external_flow(n);
@@ -92,10 +91,9 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
                 head(i) = 8*f(i)*lengths(i)/pow(diameters(i),5)/pow(rho, 2)/pow(PI,2)/9.81;
             }
             if(B_mat.isZero(0.0)) {
-                // VectorXd F1(A_eigen_t.rows());
                 VectorXd F(A_eigen_t.rows() + resistance.rows());
 
-                F = A_eigen_t * mass_flow - Eigen::VectorXd::Map(external_flow.data(), external_flow.size() + 1); // since we deleted an element so have to add 1 to make 3
+                F = A_eigen_t * mass_flow - Eigen::VectorXd::Map(external_flow.data(), external_flow.size() + 1);
                 //  std::cout << F << "\n";
                 mass_flow_new = mass_flow - A_eigen_t.inverse() * F;
                 err = (mass_flow_new - mass_flow).norm() / mass_flow.norm();
@@ -120,8 +118,12 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
                 err = (mass_flow_new - mass_flow).norm()/mass_flow.norm();
                 mass_flow = mass_flow_new;
             }
+//
+//            cerr << "The solutions are : \n";
+//            cerr << mass_flow.transpose() << "\n";
+        }
 
-        for(int i{0}; i < m; ++i){
+        for(size_t i{0}; i < m; ++i){
             final_mass_flow(k, i)= mass_flow_new(i);
         }
 

@@ -97,7 +97,7 @@ void NetworkSolve()
          << A_eigen << "\n";
     MatrixXd A_eigen_t = -A_eigen.transpose();
 
-    removeRow(A_eigen_t, 0);
+    removeRow(A_eigen_t, 0); // remove the row correspond to the source node
     cerr << "The Eigen version of the final matrix -A^T is \n"
          << A_eigen_t << "\n";
 
@@ -107,15 +107,17 @@ void NetworkSolve()
 //    constexpr double setpoint_T{25};
 //    constexpr double inlet_T{40};
 
-    MatrixXd demand_data, demands;
-    demand_data = openData("inputs/Demand_loads.csv");
-    demands = demand_data;
-   // std::cerr << demands.col(0).size() << "\n";
+    /*! Parse csv as Eigen matrix formatted objects */
+    MatrixXd demands = openData("inputs/Demand_loads.csv");
+    //demands = demand_data;
+    std::cerr << demands.col(0).size() << "\n";
 
+    //! Create oftsream for writing the solutions to file
     std::ofstream output_mass_flow("outputs/mflowLiu_1606.csv");
     output_mass_flow << "m1," << "m2," << "m3\n";
-    MatrixXd solution = MatrixXd::Zero(demands.col(0).size(), m);
-    solution = newtonXd(demands, consumers, A_eigen_t, n, m);
+    //MatrixXd solution = MatrixXd::Zero(demands.col(0).size(), m);
+    //! Involve the solver to find solutions, given the demands matrix, cusumer vector, incidence matrix, num_nodes, num_edges
+    MatrixXd solution = newtonXd(demands, consumers, A_eigen_t, n, m);
     saveData(output_mass_flow, solution);
 
 
