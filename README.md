@@ -56,7 +56,8 @@ Some general ideas for testing science codes (credit to cppslack)
 
     - Test inputs that challenge numerical precision
 
-    - Additional: fuzz testing may also be appropriate here as it will throw craptons of inputs at our SUT and possibly catch things we didn't think of analytically 
+    - Additional: fuzz testing may also be appropriate here as it will throw inputs at our fault and possibly catch things we didn't think of analytically.
+
     - A good explanation of fuzz testing can be found on the page for American Fuzzy Lop:
 [fuzzy-test](https://afl-1.readthedocs.io/en/latest/)
 
@@ -65,7 +66,7 @@ Some general ideas for testing science codes (credit to cppslack)
 
 ### Dependency required
 
-- CMake = 3.12
+- CMake >= 3.12
 - A Modern C++ compiler
 - Eigen3.3
 - doctest
