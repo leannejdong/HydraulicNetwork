@@ -36,6 +36,30 @@ We are writing a C++ library to perform hydraulic and thermal calculations for n
 ```
 --->
 
+## Status
+
+Completed Hydraulic Simulation, waiting for David for data for full validation.
+
+### To-do
+
+* Full validation of loop detection algorithm and solver
+
+* Tests
+
+Some general ideas for testing science codes (credit to cppslack)
+
+    - Test inputs at boundary conditions
+
+    - Test any inputs that might possibly divide by zero
+
+    - Test inputs for "meaningful" mathematical properties, e.g. if we are doing slop calculations test for a positive and negative slope as well as zero slope
+
+    - Test inputs that challenge numerical precision
+
+    - Additional: fuzz testing may also be appropriate here as it will throw craptons of inputs at our SUT and possibly catch things we didn't think of analytically 
+    - A good explanation of fuzz testing can be found on the page for American Fuzzy Lop:
+\url{https://afl-1.readthedocs.io/en/latest/}
+
 
 ## Build Instruction
 

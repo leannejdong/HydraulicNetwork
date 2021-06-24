@@ -34,7 +34,7 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
     VectorXd lengths = Loop_info.col(0);
     VectorXd diameters = Loop_info.col(1);
     VectorXd roughness = Loop_info.col(2);
-
+/// initialization
     double initial_guess = /*Loop_info(0,3);*/ 1;
     VectorXd mass_flow(m);
     mass_flow.setConstant(initial_guess);
@@ -91,7 +91,7 @@ MatrixXd newtonXd(MatrixXd &demands, vector<double> &consumers, MatrixXd &A_eige
                 err = (mass_flow_new - mass_flow).norm() / mass_flow.norm();
                 mass_flow = mass_flow_new;
             }
-            else {
+            else {// if network contains loop
                 for(int i = 0; i < l; ++i) {
                     for (size_t j = 0; j < m; ++j) {
                         resistance(i, j) = 2 * B_mat(i, j) * head(j) * mass_flow(j);
