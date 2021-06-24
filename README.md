@@ -58,7 +58,7 @@ Some general ideas for testing science codes (credit to cppslack)
 
     - Additional: fuzz testing may also be appropriate here as it will throw craptons of inputs at our SUT and possibly catch things we didn't think of analytically 
     - A good explanation of fuzz testing can be found on the page for American Fuzzy Lop:
-\url{https://afl-1.readthedocs.io/en/latest/}
+[fuzzy-test](https://afl-1.readthedocs.io/en/latest/)
 
 
 ## Build Instruction
