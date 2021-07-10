@@ -1,6 +1,6 @@
 #include <exception>
 #include <iostream>
-//#include <optional>
+#include <optional>
 #include <string>
 #include <vector>
 #include "../include/inci.h"
@@ -11,8 +11,16 @@ using Pair = std::vector<std::pair<int, int>>;
 int main()
 {
     //! get incidence matrix
-    cerr << LoadFile().value_or("File [network1.csv] could not be opened!") << "\n";
-    ifstream in("inputs/network1.csv");
+ //   cerr << LoadFile().value_or("File [nw_verona.csv] could not be opened!") << "\n";
+ //   ifstream in("inputs/nw_verona.csv");
+    ifstream in("inputs/nw4-3.csv");
+ //   ifstream in("inputs/network1.csv");
+    if(!in){
+        std::cerr << "Unable to open data\n";
+        return EXIT_FAILURE;
+    } else{
+        std::cerr << "\nData file opened successfully!\n";
+    }
     vector<vector<string>> data;
     string line, word;
 
@@ -24,45 +32,49 @@ int main()
         }
         data.push_back(row);
     }
-    cerr << "The input data is parsed as "
-         << "\n";
-    for (auto &row : data) {
-        for (auto &col : row) {
-            cerr << col << " ";
-        }
-        cerr << "\n";
-    }
+//    cerr << "The input data is parsed as "
+//         << "\n";
+//    for (auto &row : data) {
+//        for (auto &col : row) {
+//            std::cout << col << " ";
+//        }
+//        std::cout << "\n";
+//    }
     //! define the number of Nodes and Pipes
-    const size_t n = stoi(data[0][0]);
-    const size_t m = stoi(data[0][1]);
-    //    std::cerr << "the number of nodes is " << n << "\n";
-    //    std::cerr << "the number of pipes is " << m << "\n";
+//    const size_t n = stoi(data[0][0]);
+//    const size_t m = stoi(data[0][1]);
+    const size_t n = 4;
+    const size_t m = 3;
+//    const size_t n = 4;
+//    const size_t m = data.size();
+        std::cerr << "the number of nodes is " << n << "\n";
+        std::cerr << "the number of pipes is " << m << "\n";
 
-    vector<string> col4, col5;
+    vector<string> col2, col3;
     std::cerr << "the number of rows is " << data.size() << "\n";
     for (size_t i = 0; i < data.size(); ++i) {
         // std::cerr << data[i][3];
-        col4.push_back(data[i][3]);
-        col5.push_back(data[i][4]);
+        col2.push_back(data[i][1]);
+        col3.push_back(data[i][2]);
         //printf("Element %d: %d", i, data[i][0]);
     }
 
     std::cerr << "now let us convert vector of string of vector of ints"
               << "\n";
-    vector<size_t> col4_int, col5_int;
-    for (auto c4 : col4) {
-        col4_int.push_back(stoi(c4));
+    vector<size_t> col2_int, col3_int;
+    for (auto c2 : col2) {
+        col2_int.push_back(stoi(c2));
     }
     //! c++ index from 0, so subtract 1 from each element of our vector
-    for (auto &e4 : col4_int) {
-        e4 -= 1;
+    for (auto &e2 : col2_int) {
+        e2 -= 1;
     }
 
-    for (auto c5 : col5) {
-        col5_int.push_back(stoi(c5));
+    for (auto c3 : col3) {
+        col3_int.push_back(stoi(c3));
     }
 
-    for (auto &e5 : col5_int) {
+    for (auto &e5 : col3_int) {
         e5 -= 1;
     }
 
@@ -72,13 +84,13 @@ int main()
     //        std::cerr << c4 << "\t";
     //    }
     //    std::cerr << "\n";
-    printVec(col4_int);
+    printVec(col2_int);
     std::cerr << "column 5 is "
               << "\n";
 
-    printVec(col5_int);
-    vector<vector<int>> matA = gen_mat(m, n, col4_int, col5_int);
-    //printMat(matA);
+    printVec(col3_int);
+    vector<vector<int>> matA = gen_mat(m, n, col2_int, col3_int);
+    printMat(matA);
     // vector<vector<int>> A = outputReduceMat(matA);
     MatrixXd A_eigen = makeEigenMatrixFromVectors(matA);
     cerr << "The matrix A is \n"
@@ -91,16 +103,11 @@ int main()
     /// Loop detection
     /// First we need adjacency matrix
     Pair V;
-    for(size_t i{0}; i < col4_int.size(); ++i)
+    for(size_t i{0}; i < col2_int.size(); ++i)
     {
-        V.emplace_back(col4_int[i], col5_int[i]);
+        V.emplace_back(col2_int[i], col3_int[i]);
     }
-//    matrix adj(n);
-//    for(auto &v : V)
-//    {
-//        adj.addEdge(adj, v.first, v.second);
-//    }
-    graph g(7);
+    graph g(150);
     for(auto &v : V){
         g.addEdge(v.first, v.second);
     }
