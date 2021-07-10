@@ -11,11 +11,10 @@ template <typename T>
 std::vector<std::vector<int>> gen_mat(T m, T n, std::vector<T> &in, std::vector<T> &out){
     // For declaring a 2D vector, we first define a 1D array of size equal to the number of rows m of the desired 2D vector
     std::vector<std::vector<int>>mat(m);
-    for(T i{0}; i < n; ++i){
-        mat[i].resize(n);
+    for(auto &row : mat){
+        row.resize(n);
     }
-
-    //std::vector<int> in, out;
+    //std::vector<std::vector<int>> mat(m, vector<int>(n, 0));
 
     for (T i{0}; i < m; ++i)
         for (T j{0}; j < n; ++j){

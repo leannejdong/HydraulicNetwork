@@ -166,7 +166,8 @@ public:
                               continue;
                           for (int j = 0; j < r; ++j){
                               if(adjMatrix[i][j] == 1 && !small[j]){
-                                  treeAdjMat[i][j] = 1;struct Matrix {
+                                  treeAdjMat[i][j] = 1;
+                                  struct Matrix {
                                       Matrix(int r) : storage_(r*r), size_(r) {}
 
                                       int& operator()(int i, int j)       noexcept {
