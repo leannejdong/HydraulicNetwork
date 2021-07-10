@@ -111,8 +111,8 @@ int main()
         g.addEdge(v.first, v.second);
     }
 
-    cerr << "Print adjacency matrix: " << "\n";
-    g.printMat();
+//    cerr << "Print adjacency matrix: " << "\n";
+//    g.printMat();
 
     /// apply gotlieb algorithm to detect loops
     std::vector<int> cycles;
