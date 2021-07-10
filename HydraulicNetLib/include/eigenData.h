@@ -31,7 +31,7 @@ inline void saveData(std::ofstream &file, /*std::string fileName,*/ MatrixXd  ma
         for(size_t i{0}; i < matrix.rows(); ++i){
             for(size_t j{0}; j < matrix.cols(); ++j){
                 if(matrix(i, j)== -0){
-                    matrix(i, j) = -matrix(i, j);
+                    matrix(i, j) = 0;
                 }
             }
         }
