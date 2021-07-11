@@ -20,10 +20,7 @@ We start writing a C++ library for solving nonlinear hydraulic network.
 63 83 82 80 77 75 74 72 71 70 64 63 
 82 98 97 95 94 93 91 90 89 86 85 84 80 82 
 85 98 97 95 94 93 91 90 89 86 85 
-94 99 59 60 61 62 63 64 70 71 72 74 75 77 80 84 85 86 89 90 91 93 94 
-Timer took in s 44.0473s
-Timer took in s 44.0591s
-Process finished with exit code 0
+94 99 59 60 61 62 63 64 70 71 72 74 75 77 80 84 85 86 89 90 91 93 94
 ```
 
 * There are 8760 sets of solutions for heat flows, with each contain 7 values. The first set of solutions is found as
@@ -31,7 +28,7 @@ Process finished with exit code 0
 57.5494,25.424,32.1254,13.9795,2.43297,-10.9734,13.6895
 ```
 
-## Performance
+## Quick Benchmark
 
 * `gen_mat`: 43.7921s
 
