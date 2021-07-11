@@ -15,8 +15,6 @@ int main()
     //! get incidence matrix
  //   cerr << LoadFile().value_or("File [nw_verona.csv] could not be opened!") << "\n";
     ifstream in("inputs/Verona.csv");
- //   ifstream in("inputs/nw4-3.csv");
- //   ifstream in("inputs/network1.csv");
     if(!in){
         std::cerr << "Unable to open data\n";
         return EXIT_FAILURE;
@@ -45,12 +43,8 @@ int main()
     //! define the number of Nodes and Pipes
     const size_t n = stoi(data[0][0]);
     const size_t m = stoi(data[0][1]);
-//    const size_t n = 4;
-//    const size_t m = 3;
-//    const size_t n = 4;
-//    const size_t m = data.size();
-        std::cerr << "the number of nodes is " << n << "\n";
-        std::cerr << "the number of pipes is " << m << "\n";
+    std::cerr << "the number of nodes is " << n << "\n";
+    std::cerr << "the number of pipes is " << m << "\n";
 
     vector<string> col4, col5;
     std::cerr << "the number of rows is " << m << "\n";
@@ -61,8 +55,7 @@ int main()
         //printf("Element %d: %d", i, data[i][0]);
     }
 
-    std::cerr << "now let us convert vector of string of vector of ints"
-              << "\n";
+ //   std::cerr << "now let us convert vector of string of vector of ints\n";
     vector<size_t> col4_int, col5_int;
     for (auto c2 : col4) {
         col4_int.push_back(stoi(c2));
@@ -80,13 +73,14 @@ int main()
         e5 -= 1;
     }
 
-    std::cerr << "column 4 is "
-              << "\n";
-    printVec(col4_int);
-    std::cerr << "column 5 is "
-              << "\n";
+//    std::cerr << "column 4 is "
+//              << "\n";
+    //printVec(col4_int);
+//    std::cerr << "column 5 is "
+//              << "\n";
 
-    printVec(col5_int);
+    //printVec(col5_int);
+    std::cerr << "Measure time taken for generating incidence matrix\n";
     Timer t0;
     vector<vector<int>> matA = gen_mat(m, n, col4_int, col5_int);
  //   outputMat(matA);
@@ -101,8 +95,8 @@ int main()
 //         << A_tran << "\n";
     std::ofstream filestr("outputs/inci_tran.csv");
     saveData(filestr, A_tran);
-    /// Loop detection
-    /// First we need adjacency matrix
+    //! Loop detection
+    //! First we need adjacency matrix
     Pair V;
     for(size_t i{0}; i < col4_int.size(); ++i)
     {
@@ -116,28 +110,27 @@ int main()
 //    cerr << "Print adjacency matrix: " << "\n";
 //    g.printMat();
 
-    /// apply gotlieb algorithm to detect loops
+    //! apply gotlieb algorithm to detect loops
     std::vector<int> cycles;
-    /// find cycles from the  adjacency matrix
-    /// convert the matrix type adj to double vector
+    //! find cycles from the  adjacency matrix
+    //! convert the matrix type adj to double vector
 //    vector<vector<int>> adjVec = convertMatrix(adj);
 //    adj.displayMatrixVec(adjVec);
+    std::cerr << "Measure time taken for running Gotlieb algorithm for cycle detection\n";
     Timer t1;
     g.Gotlieb123(std::back_inserter(cycles));
     std::ofstream of("cycles.data");
     std::cout << "Print Cycles " << "\n";
     print_cycles(std::begin(cycles), std::end(cycles), std::cout);
     print_cycles(std::begin(cycles), std::end(cycles), of);
-
-    cerr << "Solving for mass flows: " << "\n";
-
+    Timer t2;
+    std::cerr << "Measure time taken for solving massflow\n";
     try {
         NetworkSolve();
     } catch (const std::exception &exception) {
         std::cerr << exception.what() << '\n';
         throw;
     }
-
 
     return 0;
 }

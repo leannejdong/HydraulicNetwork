@@ -25,12 +25,19 @@ Timer took in s 44.0473s
 Timer took in s 44.0591s
 Process finished with exit code 0
 ```
-<!---
-* There are 8760 sets of solutions for heat flows, with each contain 8 values. The first set of solutions is found as
+
+* There are 8760 sets of solutions for heat flows, with each contain 7 values. The first set of solutions is found as
 ```
 57.5494,25.424,32.1254,13.9795,2.43297,-10.9734,13.6895
 ```
--->
+
+## Performance
+
+* `gen_mat`: 43.7921s
+
+* `Gotlieb123`: 43.8249s
+
+* `NetworkSolve`: 43.8368s
 
 ## Build Instruction
 
