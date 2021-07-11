@@ -7,7 +7,7 @@ target_link_libraries(HydraulicNetLib PUBLIC    # PUBLIC so my 'users' also link
         Eigen3::Eigen
         )
 
-add_executable(basic_tests src/main.cpp src/inci.cpp src/inci_test.cpp src/NetworkSolve.cpp include/graph.h)
+add_executable(basic_tests src/main.cpp src/inci.cpp src/inci_test.cpp src/NetworkSolve.cpp include/graph.h include/Timer.h)
 target_link_libraries(basic_tests HydraulicNetLib)
 target_include_directories(basic_tests PRIVATE include)
 

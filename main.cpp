@@ -8,6 +8,7 @@
 #include "../include/NetworkSolve.h"
 #include "../include/graph.h"
 #include "../include/eigenData.h"
+#include "../include/Timer.h"
 using Pair = std::vector<std::pair<int, int>>;
 int main()
 {
@@ -86,6 +87,7 @@ int main()
               << "\n";
 
     printVec(col5_int);
+    Timer t0;
     vector<vector<int>> matA = gen_mat(m, n, col4_int, col5_int);
  //   outputMat(matA);
     // vector<vector<int>> A = outputReduceMat(matA);
@@ -120,6 +122,7 @@ int main()
     /// convert the matrix type adj to double vector
 //    vector<vector<int>> adjVec = convertMatrix(adj);
 //    adj.displayMatrixVec(adjVec);
+    Timer t1;
     g.Gotlieb123(std::back_inserter(cycles));
     std::ofstream of("cycles.data");
     std::cout << "Print Cycles " << "\n";
