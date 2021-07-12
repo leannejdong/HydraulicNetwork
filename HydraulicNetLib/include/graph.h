@@ -166,21 +166,6 @@ public:
                           for (int j = 0; j < r; ++j){
                               if(adjMatrix[i][j] == 1 && !small[j]){
                                   treeAdjMat[i][j] = 1;
-                                  struct Matrix {
-                                      Matrix(int r) : storage_(r*r), size_(r) {}
-
-                                      int& operator()(int i, int j)       noexcept {
-                                          // std::cerr << "i= " << i << "and j= " << j << " and size_ =" << size_ << "\n";
-                                          return storage_[i + size_*(j)]; }
-                                      const int&  operator()(int i, int j) const noexcept { return storage_[i + size_*(j)]; }
-
-                                      int size() const noexcept { return size_; }
-
-                                  private:
-                                      std::vector<int> storage_;
-                                      int size_;
-                                  };
-
                                   treeAdjMat[j][i] = 1;
                                   return toComponent(j);
                               }
@@ -218,99 +203,6 @@ public:
         }
         return cycles;
     }
-
-//    const std::vector<std::vector<int>> &getAdjMat() const
-//    {
-//        return adjMatrix;
-//    }
-//
-//    auto Gotlieb4()
-//    {
-//        int m = 0; //std::vector<std::vector<bool>> adjMatrix;         std::size_t r = adjMatrix.size();
-//        int k, c, nu, done; size_t i, j;
-//
-//        for(i=0; i<r; ++i)
-//        {
-//            std::vector<int> &treeAdjMat_i = treeAdjMat[i];
-//            std::vector<int> &adjMatrix_i = adjMatrix[i];
-//            //int n_differences = 0;
-//            assert(r==treeAdjMat_i.size());
-//            m += countDifference(treeAdjMat_i,adjMatrix_i);
-//        }
-//        int &count = m;
-//        count /= 2;
-//        //count how many sides have to be eliminated to obtain the tree graph = number of independent links
-//        c = r*count + count + 1;
-//        std::vector<std::vector<int>> indm(r);
-//        for (i = 0; i<r; ++i)
-//        {
-//            indm[i].resize(c);
-//        }
-//        for (j = 0; j < c-r; j = j+r+1)
-//            for (size_t i = 0; i<r; ++i)
-//                indm.at(i).at(j) = -4;
-//        for (i = 0; i < r; ++i)
-//            indm.at(i).at(c-1)=-5;
-//        for (k = 1; k < c; k=k+r+1)
-//            for(i = 0; i < r; ++i)
-//                for(j = 0; j < r; ++j)
-//                    indm.at(i).at(j+k) = treeAdjMat.at(i).at(j);
-//        // add the sides at a time
-//        k = 1;
-//        for(i = 0; i < r; ++i)
-//            for(j = i+1; j<r; ++j)
-//                if(adjMatrix.at(i).at(j)==1 && treeAdjMat.at(i).at(j)==0)
-//                {
-//                    //std::cerr << " i = " << i << " and indm.size() = " << indm.size() << "\n";
-//                    std::cerr << " j+k = " << j+k << " and indm.at(i).size() = " << indm.at(i).size() << "\n";
-//                    indm.at(i).at(j+k)=1;
-//                    indm.at(j).at(i+k)=1;
-//                    k = k + r + 1;
-//                }
-//        /*I remove the segments that are outside the loop (see drawing)*/
-//        nu = 0; /*nu is the number one on a line*/
-//        done=0;
-//        for(k=1; k<c; k=k+r+1){
-//            while(done==0){
-//                done=1;
-//                for(i=0; i<r; i++){
-//                    for(j=0; j<r; j++) /*Count how many ones are on a line*/
-//                        if(indm.at(i).at(j+k)==1)
-//                            nu++;
-//                    if(nu==1)       /*if there is only one,  make it null*/
-//                        for(j=0; j<r; j++)    /*I am in the j of 1*/
-//                            if(indm.at(i).at(j+k)==1){
-//                                indm.at(i).at(j+k)=0;
-//                                indm.at(j).at(i+k)=0;
-//                                done=0;
-//                            }
-//                    nu=0;
-//                }
-//            }
-//            done=0;
-//        }
-//
-//        return std::make_tuple(m, indm);
-//    }
-//
-//    void printMat()
-//    {
-//        int i, j;
-//        for (i = 0; i < r; ++i )
-//        {
-//            for (j = 0; j < r; ++j)
-//            {
-//                std::cout << std::to_string(adjMatrix.at(i).at(j)) << " ";
-//            }
-//            std::cout << "\t";
-//
-//            for (j = 0; j < r; ++j)
-//            {
-//                std::cout << std::to_string(treeAdjMat.at(i).at(j)) << " ";
-//            }
-//            std::cout << "\n";
-//        }
-//    }
 };
 
 // Requires a sequence of closed cycles.
