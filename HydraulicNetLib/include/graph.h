@@ -18,15 +18,6 @@ class graph {
     std::vector<std::vector<int>> adjMatrix;
     std::vector<std::vector<int>> treeAdjMat;
 
-    int countDifference(auto &treeAdjMat_i, auto &adjMatrix_i)
-    {
-        int n_differences = 0;
-        for(int j=0; j<treeAdjMat_i.size()/*-1*/; j++)
-            if(treeAdjMat_i[j]!=adjMatrix_i[j])
-                ++n_differences;
-        return n_differences;
-    }
-
 public:
     // Initialize the matrix to zero
     graph(int r) : r(r), adjMatrix(r, std::vector<int>(r, 0)),
@@ -39,24 +30,6 @@ public:
     }
 
     int size() const { return r; };
-
-
-//    void removeEdge(int i, int j)
-//    {
-//        assert(i >= 0 && i < r && j > 0 && j < r);
-//         ++adjMatrix[i][j] ;
-    //     ++adjMatrix[j][i] ;
-//    }
-//
-//    bool isEdge(int i, int j)
-//    {
-//        if (i >= 0 && i < r && j > 0 && j < r)
-//            return adjMatrix[i][j];
-//        else
-//            return false;
-//    }
-
-
 
     template<class OutputIterator>
     void DFSCheckCycle(std::vector<std::vector<int>> &adjMat, size_t u, size_t par, std::vector<bool> &visited,
@@ -193,13 +166,14 @@ public:
         // count how many sides been eliminated to get the spanning tree
         // FINAL: Iterate through each eliminated edge, try adding it into mat B(treeAdjMat)
         // The use DFS to check the cycle, the source node is the first node of the edge
+        // temporarily modifying a data structure.
         for (auto edge: eliminatedEdges)
         {
             visited = std::vector<bool>(r, false);
             std::vector<int> parents(r, -1);
-            treeAdjMat[edge.first][edge.second] = treeAdjMat[edge.second][edge.first] = 1;
-            DFSCheckCycle(treeAdjMat, edge.first, -1, visited, parents, edge.first, cycles);
-            treeAdjMat[edge.first][edge.second] = treeAdjMat[edge.second][edge.first] = 0;
+            treeAdjMat[edge.first][edge.second] = treeAdjMat[edge.second][edge.first] = 1; // adds an edge
+            DFSCheckCycle(treeAdjMat, edge.first, -1, visited, parents, edge.first, cycles); // check for cycles
+            treeAdjMat[edge.first][edge.second] = treeAdjMat[edge.second][edge.first] = 0; // remove the edge
         }
         return cycles;
     }
