@@ -64,7 +64,7 @@ public:
     // adjacency matrix B. For if row i of adjMatrix, set treeAdjMatrix[i][j] = 1 if
     // adjMatrix[i][j] is the 1st superdiagonal element of ith row of adjMatrix
     template<typename OutputIterator>
-    OutputIterator Gotlieb123(OutputIterator cycles)  // how to make this to a member of matrix class?
+    OutputIterator Gotlieb123(OutputIterator cycles)
     {
         const auto r = adjMatrix.size();
         // Initialize adjacency matrix for spanning tree
