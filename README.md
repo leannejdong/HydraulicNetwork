@@ -9,7 +9,7 @@ We start writing a C++ library for solving nonlinear hydraulic network.
 
 * Derive incidence matrix
 
-* Cycles detected
+* The fundamental set of cycles base
 ```shell
 12 58 57 18 17 16 15 14 13 12 
 32 40 39 38 37 36 35 34 33 32 
