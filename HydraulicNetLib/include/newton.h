@@ -25,8 +25,9 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
     VectorXd diameters = Loop_info.col(1);
     VectorXd roughness = Loop_info.col(2)/1000;
 /// initialization
-    const double initial_guess = 1;
-    VectorXd mass_flow = VectorXd::Zero(m);
+    const double initial_guess = 0.1;
+    VectorXd mass_flow(m);
+    //mass_flow.setConstant(initial_guess);
 
     MatrixXd final_mass_flow= MatrixXd::Zero(demands.col(0).size(), m);
 
@@ -64,7 +65,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 //    MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
     for(int k{0}; k < demands.col(0).size(); ++k){
     //for(int k{0}; k < 2; ++k){
-        mass_flow.setConstant(initial_guess);
+       // mass_flow.setConstant(initial_guess);
 
 
         vector<double> external_flow(n);
@@ -106,18 +107,19 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
         // cerr << "The size of the jacobien is " << jacob.rows() << "rows and " << jacob.cols() << "columns\n";
 //        std::cout << mass_flow << "\n";
 //        std::cout << mu << "and" << rho << "and" << PI << "\n";
-
+        mass_flow.setConstant(initial_guess);
         while(err > tolerance){
-            //mass_flow.setConstant(initial_guess);
         //    std::cerr << mass_flow << "\n";
             for(size_t i = 0; i < m; ++i){  // calculate friction
-                if(mass_flow.isZero(0.0)){
+                if(mass_flow.isZero()){
                     head.setConstant(0);
                     //head(i) = 0;
                 } else{
                     //mass_flow.setConstant(initial_guess);
-                    reynolds(i) = 4*abs(mass_flow(i))/mu/rho/PI/diameters(i);
-                    //reynolds.array() = 4/mu/rho/PI/(diameters.array().abs());
+                    //reynolds(i) = 4*abs(mass_flow(i))/mu/rho/PI/diameters(i);
+                    //std::cerr << abs(mass_flow(i)) << " ";
+                    reynolds(i) = 4/mu/rho/PI/diameters(i);
+                    //reynolds.array() = 4*abs(mass_flow.array())/mu/rho/PI/(diameters.array().abs());
                     if(reynolds(i) < 2300){
                         f(i) = 64/reynolds(i);
                     } else {
@@ -155,11 +157,12 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
                 F1 = A_eigen_t * mass_flow - Eigen::VectorXd::Map(external_flow.data(), external_flow.size());
                 VectorXd F(A_eigen_t.rows() + resistance.rows());
                 F << F1, F2;
-                VectorXd mass_flow_new(m);
                 mass_flow_new = mass_flow - jacob.inverse() * F;
                 err = (mass_flow_new - mass_flow).norm()/mass_flow.norm();
                 mass_flow = mass_flow_new;
+               // std::cerr << mass_flow << " ";
             }
+            saveData(res_mat, resistance);
 
 //
 //            cerr << "The solutions are : \n";
@@ -168,7 +171,9 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
         for(size_t i{0}; i < m; ++i){
             final_mass_flow(k, i)= mass_flow_new(i);
         }
-        //final_mass_flow = mass_flow_new;
+//        final_mass_flow = mass_flow_new;
+//        std::cerr << final_mass_flow;
+
 
        // std::cerr << "The number of rows is " << resistance.rows() << "\n";
 //        saveData(res_mat, resistance);
@@ -177,7 +182,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
         saveData(force, f);
         saveData(rey, reynolds);
         saveData(dia, diameters);
-        saveData(res_mat, resistance);
+        //saveData(res_mat, resistance);
         saveData(jacob_mat, jacob);
 
 
@@ -185,7 +190,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 
 
     return final_mass_flow;
-    //return mass_flow;
+    //return mass_flow_new;
 
 
 }
