@@ -6,7 +6,8 @@
 #define HYDRAULICNETWORK_NETWORKSOLVE_H
 #include <Eigen/QR>
 using Eigen::MatrixXd;
+namespace HydraulicNetwork {
 
-void NetworkSolve();
-
+    void NetworkSolve();
+}
 #endif//HYDRAULICNETWORK_NETWORKSOLVE_H

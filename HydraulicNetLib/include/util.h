@@ -24,7 +24,7 @@ using namespace Eigen;
 
 inline std::optional<string> LoadFile()
 {
-    ifstream file("inputs/network1.csv");
+    ifstream file("inputs/verona.csv");
     if( file )
     {
         return /*{true, */string{

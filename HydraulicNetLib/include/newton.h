@@ -20,7 +20,7 @@ constexpr int l = 10;
 MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, const size_t n, const size_t m)
 {
     MatrixXd Loop_info;
-    Loop_info = openData("inputs/Pipes_information.csv");
+    Loop_info = HydraulicNetwork::openData("inputs/Pipes_information.csv");
     VectorXd lengths = Loop_info.col(0);
     VectorXd diameters = Loop_info.col(1);
     VectorXd roughness = Loop_info.col(2)/1000;
@@ -33,35 +33,8 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 
     VectorXd mass_flow_new = VectorXd::Zero(m);
     MatrixXd B_mat;
-    B_mat = openData("inputs/Loops.csv");
+    B_mat = HydraulicNetwork::openData("inputs/Loops.csv");
 
-//    std::ofstream jacob_mat("outputs/jacobian.csv");
-//    std::ofstream res_mat("outputs/resistance.csv");
-//    std::ofstream head_vec("outputs/head.csv");
-//    std::ofstream force("outputs/force.csv");
-//    std::ofstream rey("outputs/reynold.csv");
-//    std::ofstream dia("outputs/diameters.csv");
-//    // std::cout << mass_flow << "\n";
-
-/// Initialize all array object to calculate mass flow rate
-
-//    VectorXd reynolds = VectorXd::Zero(m);
-//    VectorXd f = VectorXd::Zero(m);
-//    VectorXd head = VectorXd::Zero(m);
-//
-//    MatrixXd resistance = MatrixXd::Zero(l, m);
-//    //  std::cout << resistance;
-//    MatrixXd F22 = MatrixXd::Zero(l, m);
-//    int sum = 0; double err = 100;
-//    VectorXd F2 = VectorXd::Zero(l);
-//    std::ofstream jacob_mat("outputs/jacobian.csv");
-//    std::ofstream res_mat("outputs/resistance.csv");
-//    std::ofstream head_vec("outputs/head.csv");
-//    std::ofstream force("outputs/force.csv");
-//    std::ofstream rey("outputs/reynold.csv");
-//    std::ofstream dia("outputs/diameters.csv");
-//    // std::cout << mass_flow << "\n";
-//
 //    MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
     for(int k{0}; k < demands.col(0).size(); ++k){
     //for(int k{0}; k < 2; ++k){
@@ -84,7 +57,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 
 /// Initialize all array object to calculate mass flow rate
         MatrixXd B_mat;
-        B_mat = openData("inputs/Loops.csv");
+        B_mat = HydraulicNetwork::openData("inputs/Loops.csv");
 
         VectorXd reynolds = VectorXd::Zero(m);
         VectorXd f = VectorXd::Zero(m);
@@ -162,7 +135,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
                 mass_flow = mass_flow_new;
                // std::cerr << mass_flow << " ";
             }
-            saveData(res_mat, resistance);
+            HydraulicNetwork::saveData(res_mat, resistance);
 
 //
 //            cerr << "The solutions are : \n";
@@ -178,14 +151,12 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
        // std::cerr << "The number of rows is " << resistance.rows() << "\n";
 //        saveData(res_mat, resistance);
 //        saveData(jacob_mat, jacob);
-        saveData(head_vec, head );
-        saveData(force, f);
-        saveData(rey, reynolds);
-        saveData(dia, diameters);
+        HydraulicNetwork::saveData(head_vec, head );
+        HydraulicNetwork::saveData(force, f);
+        HydraulicNetwork::saveData(rey, reynolds);
+        HydraulicNetwork::saveData(dia, diameters);
         //saveData(res_mat, resistance);
-        saveData(jacob_mat, jacob);
-
-
+        HydraulicNetwork::saveData(jacob_mat, jacob);
     }
 
 
