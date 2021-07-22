@@ -176,4 +176,29 @@ inline vector<vector<int>> convertMatrix(matrix const& adj){
     }
     return matrixVec;
 }
+
+void write_csv(std::string filename, std::pair<std::string, std::vector<double>> dataset) {
+    // Make a CSV file with one or more columns of integer values
+    // Each column of data is represented by the pair <column name, column data>
+    //   as std::pair<std::string, std::vector<type>>
+    // The dataset is represented as a vector of these columns
+    // Note that all columns should be the same size
+
+    // Create an output filestream object
+    std::ofstream myFile(filename);
+
+    // Send column names to the stream
+
+        myFile << dataset.first;
+        myFile << "," << "\n"; // No comma at end of line
+
+    // Send data to the stream
+    for(auto &s : dataset.second)
+    {
+        myFile << s;
+        if(!dataset.second.size() - 1) myFile << ","; // No comma at end of line
+        myFile << "\n";
+    }
+
+}
 #endif//HYDRAULICNETWORK_UTIL_H

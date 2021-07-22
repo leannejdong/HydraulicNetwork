@@ -74,6 +74,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
         std::ofstream force("outputs/force.csv");
         std::ofstream rey("outputs/reynold.csv");
         std::ofstream dia("outputs/diameters.csv");
+        std::ofstream error("outputs/error.csv");
        // std::cout << mass_flow << "\n";
 
         MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
@@ -133,11 +134,11 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
                 mass_flow_new = mass_flow - jacob.inverse() * F;
                 err = (mass_flow_new - mass_flow).norm()/mass_flow.norm();
                 mass_flow = mass_flow_new;
-               // std::cerr << mass_flow << " ";
+              //  error << err;
+
+                // std::cerr << mass_flow << " ";
             }
-//            if(err <= tolerance){
-//                break;
-//            }
+            //error << err << ", ";
             HydraulicNetwork::saveData(res_mat, resistance);
 
 //
@@ -160,6 +161,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
         HydraulicNetwork::saveData(dia, diameters);
         //saveData(res_mat, resistance);
         HydraulicNetwork::saveData(jacob_mat, jacob);
+        //HydraulicNetwork::saveData(error, static_cast<Matrix<double, -1, -1, 0> &&>(err));
     }
 
 
