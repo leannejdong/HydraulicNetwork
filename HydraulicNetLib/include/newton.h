@@ -2,7 +2,7 @@
 #include <iomanip>
 #include<vector>
 #include<string>
-#include <cmath>
+//#include <cmath>
 #include <cstdlib>
 #include <Eigen/Dense>
 #include <fstream>
@@ -13,7 +13,7 @@ using std::cerr;
 constexpr long double mu{4.04e-04};
 constexpr long double rho{980};
 constexpr long double PI{3.14159265};
-const long double tolerance = 1e-14;
+constexpr long double tolerance{1e-14};
 constexpr int l{10};
 #ifndef HYDRAULICNETWORK_NEWTON_H
 #define HYDRAULICNETWORK_NEWTON_H
@@ -27,7 +27,6 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 /// initialization
     const double initial_guess = 0.1;
     VectorXd mass_flow(m);
-    //mass_flow.setConstant(initial_guess);
 
     MatrixXd final_mass_flow= MatrixXd::Zero(demands.col(0).size(), m);
 
@@ -35,12 +34,8 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
     MatrixXd B_mat;
     B_mat = HydraulicNetwork::openData("inputs/Loops.csv");
 
-//    MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
     for(int k{0}; k < demands.col(0).size(); ++k){
-    //for(int k{0}; k < 2; ++k){
         mass_flow.setConstant(initial_guess);
-
-
         vector<double> external_flow(n);
 /// Assigning node with proper external mass flow rate
         for(size_t i{0}; i < consumers.size(); ++i){
@@ -50,10 +45,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
                 }
             }
         }
-        //  printVec(external_flow);
         external_flow.erase(external_flow.begin()+148-1);
-        //    printVec(external_flow);
-  //      std::cerr << mass_flow << "\n";
 
 /// Initialize all array object to calculate mass flow rate
         MatrixXd B_mat;
@@ -78,22 +70,13 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
        // std::cout << mass_flow << "\n";
 
         MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
-        // cerr << "The size of the jacobien is " << jacob.rows() << "rows and " << jacob.cols() << "columns\n";
-//        std::cout << mass_flow << "\n";
-//        std::cout << mu << "and" << rho << "and" << PI << "\n";
-       // mass_flow.setConstant(initial_guess);
         while(err > tolerance){
         //    std::cerr << mass_flow << "\n";
             for(size_t i = 0; i < m; ++i){  // calculate friction
                 if(mass_flow(i) == 0.00){
-                    //head.setConstant(0);
                     break;
                 } else{
-                    //mass_flow.setConstant(initial_guess);
-                    reynolds(i) = 4*abs(mass_flow(i))/mu/rho/PI/diameters(i);
-                    //std::cerr << abs(mass_flow(i)) << " ";
-                    //reynolds(i) = 4/mu/rho/PI/diameters(i);
-                    //reynolds.array() = 4*abs(mass_flow.array())/mu/rho/PI/(diameters.array().abs());
+                    reynolds(i) = 4*std::abs(mass_flow(i))/mu/rho/PI/diameters(i);
                     if(reynolds(i) < 2300){
                         f(i) = 64/reynolds(i);
                     } else {
@@ -138,7 +121,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 
                 // std::cerr << mass_flow << " ";
             }
-            //error << err << ", ";
+            error << err << ", ";
             HydraulicNetwork::saveData(res_mat, resistance);
 
 //
