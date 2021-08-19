@@ -16,7 +16,7 @@ endif()
 enable_testing()
 add_subdirectory(HydraulicNetLib)
 add_executable(HydraulicNetwork main.cpp)
-target_link_libraries(HydraulicNetwork PRIVATE HydraulicNetLib Eigen3::Eigen)
+target_link_libraries(HydraulicNetwork LINK_PUBLIC HydraulicNetLib Eigen3::Eigen)
 #target_link_libraries(HydraulicNetwork PRIVATE HydraulicNetLib range)
 
 if (${CMAKE_SIZEOF_VOID_P} EQUAL 4)

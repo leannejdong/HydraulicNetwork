@@ -22,15 +22,13 @@ using std::cerr;
 using namespace Eigen;
 
 
-inline std::optional<string> LoadFile()
+inline std::optional<string> LoadFile(const std::string& file_path)
 {
-    ifstream file("inputs/verona.csv");
-    if( file )
+    ifstream stream(file_path);
+    if( stream )
     {
-        return /*{true, */string{
-                std::istreambuf_iterator{ file },
-                std::istreambuf_iterator<char>{}
-        }/*}*/;
+        std::string result;
+        return result;
     }
     return {};
 }
@@ -163,7 +161,6 @@ private:
 
 
 inline vector<vector<int>> convertMatrix(matrix const& adj){
-    //vector<vector<int>> matrixVec(7);
     vector<vector<int>> matrixVec(adj.size(), vector<int> (adj.size(), 0));
 
     for(int i = 0; i < adj.size(); i++)

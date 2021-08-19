@@ -4,7 +4,6 @@
 #include "inci.h"
 #include "util.h"
 #include "graph.h"
-#include "eigenData.h"
 #include "Timer.h"
 #include <range/v3/view.hpp>
 #include <typeinfo>
@@ -14,8 +13,9 @@ using Pair = std::vector<std::pair<int, int>>;
 namespace HydraulicNetwork {
     void NetworkSolve() {
         //! get incidence matrix
-        cerr << LoadFile().value_or("File [nw_verona.csv] could not be opened!") << "\n";
-        ifstream in("inputs/verona.csv");
+
+        cerr << LoadFile("data/verona.csv").value_or("File [nw_verona.csv] could not be opened!") << "\n";
+        ifstream in("data/verona.csv");
         //    if(!in){
         //        std::cerr << "Unable to open data\n";
         //        //return EXIT_FAILURE;
@@ -24,7 +24,6 @@ namespace HydraulicNetwork {
         //    }
         vector<vector<string>> data;
         string line, word;
-
         while (getline(in, line)) {
             stringstream ss(line);
             vector<string> row;
@@ -33,14 +32,6 @@ namespace HydraulicNetwork {
             }
             data.push_back(row);
         }
-        //    cerr << "The input data is parsed as "
-        //         << "\n";
-        //    for (auto &row : data) {
-        //        for (auto &col : row) {
-        //            std::cout << col << " ";
-        //        }
-        //        std::cout << "\n";
-        //    }
         //! define the number of Nodes and Pipes
         const size_t n = stoul(data[0][0]);
         const size_t m = stoul(data[0][1]);
@@ -54,7 +45,6 @@ namespace HydraulicNetwork {
         vector<string> col4, col5;
         std::cerr << "the number of rows is " << m << "\n";
         for (size_t i = 0; i < m; ++i) {
-            // std::cerr << data[i][3];
             col4.push_back(data[i][3]);
             col5.push_back(data[i][4]);
             //printf("Element %d: %d", i, data[i][0]);
@@ -78,28 +68,12 @@ namespace HydraulicNetwork {
             e5 -= 1;
         }
 
-        //    std::cerr << "column 4 is "
-        //              << "\n";
-        //printVec(col4_int);
-        //    std::cerr << "column 5 is "
-        //              << "\n";
-
-        //printVec(col5_int);
         std::cerr << "Measure time taken for generating incidence matrix\n";
         HydraulicNetwork::Timer t0;
         vector<vector<int>> matA = HydraulicNetwork::gen_mat(m, n, col4_int, col5_int);
-        //   outputMat(matA);
-        // vector<vector<int>> A = outputReduceMat(matA);
         MatrixXd A_eigen = makeEigenMatrixFromVectors(matA);
-        //    cerr << "The matrix A is \n"
-        //         << A_eigen << "\n";
 
         MatrixXd A_tran = -A_eigen.transpose();
-        //    removeRow(A_tran, source-1);
-        //    cerr << "The matrix -A^T is \n"
-        //         << A_tran << "\n";
-        //    std::ofstream filestr("outputs/inci_tran.csv");
-        //    saveData(filestr, A_tran);
         //! Loop detection
         //! First we need adjacency matrix
         Pair V;
@@ -111,58 +85,31 @@ namespace HydraulicNetwork {
             g.addEdge(v.first, v.second);
         }
 
-        //    cerr << "Print adjacency matrix: " << "\n";
-        //    g.printMat();
-
         //! apply gotlieb algorithm to detect loops
         std::vector<int> cycles;
         //! find cycles from the  adjacency matrix
         //! convert the matrix type adj to double vector
-        //    vector<vector<int>> adjVec = convertMatrix(adj);
-        //    adj.displayMatrixVec(adjVec);
+
         std::cerr << "Measure time taken for running Gotlieb algorithm for cycle detection\n";
         HydraulicNetwork::Timer t1;
         g.Gotlieb123(std::back_inserter(cycles));
-        std::ofstream of("cycles.data");
+     //   std::ofstream of("cycles.data");
         std::cout << "Print Cycles "
                   << "\n";
         HydraulicNetwork::print_cycles(std::begin(cycles), std::end(cycles), std::cout);
-        HydraulicNetwork::print_cycles(std::begin(cycles), std::end(cycles), of);
-        std::ofstream filestr("outputs/inci_tran_reduced.csv");
+     //   HydraulicNetwork::print_cycles(std::begin(cycles), std::end(cycles), of);
+        //std::ofstream filestr("outputs/inci_tran_reduced.csv");
         removeRow(A_tran, source - 1);
-        HydraulicNetwork::saveData(filestr, A_tran);
+        //HydraulicNetwork::saveData(filestr, A_tran);
 
         MatrixXd demands;
-        demands = HydraulicNetwork::openData("inputs/Demand_loads.csv");
-        //std::cerr << demands.col(0).size() << "\n";
+        demands = HydraulicNetwork::openData("data/Demand_loads.csv");
         VectorXd consumers = demands.row(0);
         removeRow(demands, 0);
-        std::ofstream output_mass_flow("outputs/mflow_verona.csv");
+      //  std::ofstream output_mass_flow("outputs/mflow_verona.csv");
 
 
         MatrixXd solution = newtonXd(demands, consumers, A_tran, n, m);
-        HydraulicNetwork::saveData(output_mass_flow, solution);
 
-
-        //    //! Obtain massflow from energy
-        ////    VectorXd Demand_C = demand.col(0)/*/4.2/15*/;
-        ////    VectorXd Demand_D = demand.col(1)/*/4.2/15*/;
-        ////    VectorXd Demand_E = demand.col(2)/*/4.2/15*/;
-        ////    VectorXd Demand_F = demand.col(3)/*/4.2/15*/;
-        ////    VectorXd Demand_G = demand.col(4)/*/4.2/15*/;
-        //
-        //
-        //    std::ofstream massflow("outputs/mflow.csv");
-        // //   massflow << "m1," << "m2," << "m3," << "m4," << "m5," << "m6," << "m7\n";
-        //    for(int i{0}; i < demand.rows(); ++i) {
-        //        //onst auto [m0, m1, m2, m3, m4, m5, m6] = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
-        //        std::vector<double> solnVec = newtonXd(Demand_C(i), Demand_D(i), Demand_E(i), Demand_F(i), Demand_G(i));
-        //        //massflow << m0 << "," << m1 << "," << m2 << "," << m3 << "," << m4 << "," << m5 << "," << m6 << "\n";
-        //        for(auto&s : solnVec){
-        //            massflow << s << "," ;
-        //        }
-        //        massflow << "\n";
-        //
-        //    }
     }
 }
