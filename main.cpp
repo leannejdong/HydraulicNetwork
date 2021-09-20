@@ -4,7 +4,6 @@
 #include "../include/Timer.h"
 int main()
 {
-
     HydraulicNetwork::Timer t2;
     std::cerr << "Measure time taken for solving massflow\n";
     try {

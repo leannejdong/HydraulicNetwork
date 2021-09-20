@@ -20,7 +20,7 @@ constexpr int l{10};
 MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, const size_t n, const size_t m)
 {
     MatrixXd Loop_info;
-    Loop_info = HydraulicNetwork::openData("data/Pipes_information.csv");
+    Loop_info = HydraulicNetwork::openData("HydraulicNetwork/data/Pipes_information.csv");
     VectorXd lengths = Loop_info.col(0);
     VectorXd diameters = Loop_info.col(1);
     VectorXd roughness = Loop_info.col(2)/1000;
@@ -32,7 +32,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 
     VectorXd mass_flow_new = VectorXd::Zero(m);
     MatrixXd B_mat;
-    B_mat = HydraulicNetwork::openData("data/Loops.csv");
+    B_mat = HydraulicNetwork::openData("HydraulicNetwork/data/Loops.csv");
 
     for(int k{0}; k < demands.col(0).size(); ++k){
         mass_flow.setConstant(initial_guess);
@@ -49,7 +49,7 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
 
 /// Initialize all array object to calculate mass flow rate
         MatrixXd B_mat;
-        B_mat = HydraulicNetwork::openData("data/Loops.csv");
+        B_mat = HydraulicNetwork::openData("HydraulicNetwork/data/Loops.csv");
 
         VectorXd reynolds = VectorXd::Zero(m);
         VectorXd f = VectorXd::Zero(m);
@@ -60,13 +60,13 @@ MatrixXd newtonXd(MatrixXd &demands, VectorXd &consumers, MatrixXd &A_eigen_t, c
         MatrixXd F22 = MatrixXd::Zero(l, m);
         int sum = 0; double err = 100;
         VectorXd F2 = VectorXd::Zero(l);
-        std::ofstream jacob_mat("data/outputs/jacobian.csv");
-        std::ofstream res_mat("data/outputs/resistance.csv");
-        std::ofstream head_vec("data/outputs/head.csv");
-        std::ofstream force("data/outputs/force.csv");
-        std::ofstream rey("data/outputs/reynold.csv");
-        std::ofstream dia("data/outputs/diameters.csv");
-        std::ofstream error("data/outputs/error.csv");
+        std::ofstream jacob_mat("HydraulicNetwork/data/outputs/jacobian.csv");
+        std::ofstream res_mat("HydraulicNetwork/data/outputs/resistance.csv");
+        std::ofstream head_vec("HydraulicNetwork/data/outputs/head.csv");
+        std::ofstream force("HydraulicNetwork/data/outputs/force.csv");
+        std::ofstream rey("HydraulicNetwork/data/outputs/reynold.csv");
+        std::ofstream dia("HydraulicNetwork/data/outputs/diameters.csv");
+        std::ofstream error("HydraulicNetwork/data/outputs/error.csv");
 
         MatrixXd jacob(A_eigen_t.rows() + resistance.rows(), resistance.cols());
         while(err > tolerance){
