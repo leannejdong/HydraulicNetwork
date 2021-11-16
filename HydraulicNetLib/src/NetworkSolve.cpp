@@ -1,11 +1,10 @@
-#include "../include/NetworkSolve.h"
-#include "../include/eigenData.h"
-#include "../include/newton.h"
-#include "../include/inci.h"
-#include "../include/util.h"
-#include "../include/graph.h"
-#include "../include/Timer.h"
-#include <range/v3/view.hpp>
+#include "NetworkSolve.h"
+#include "eigenData.h"
+#include "newton.h"
+#include "inci.h"
+#include "util.h"
+#include "graph.h"
+#include "Timer.h"
 #include <typeinfo>
 
 using Eigen::VectorXd;
@@ -14,8 +13,8 @@ namespace HydraulicNetwork {
     void NetworkSolve() {
         //! get incidence matrix
 
-        cerr << LoadFile("HydraulicNetwork/data/verona.csv").value_or("File [nw_verona.csv] could not be opened!") << "\n";
-        ifstream in("HydraulicNetwork/data/verona.csv");
+        cerr << LoadFile("data/verona.csv").value_or("File [nw_verona.csv] could not be opened!") << "\n";
+        ifstream in("data/verona.csv");
         //    if(!in){
         //        std::cerr << "Unable to open data\n";
         //        //return EXIT_FAILURE;
@@ -103,7 +102,7 @@ namespace HydraulicNetwork {
         //HydraulicNetwork::saveData(filestr, A_tran);
 
         MatrixXd demands;
-        demands = HydraulicNetwork::openData("HydraulicNetwork/data/Demand_loads.csv");
+        demands = HydraulicNetwork::openData("data/Demand_loads.csv");
         VectorXd consumers = demands.row(0);
         removeRow(demands, 0);
       //  std::ofstream output_mass_flow("outputs/mflow_verona.csv");
