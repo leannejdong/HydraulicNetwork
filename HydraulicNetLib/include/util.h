@@ -1,7 +1,3 @@
-//
-// Created by leanne on 5/10/21.
-//
-
 #ifndef HYDRAULICNETWORK_UTIL_H
 #define HYDRAULICNETWORK_UTIL_H
 #include <Eigen/Dense>
@@ -10,7 +6,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <vector>
 #include <optional>
 

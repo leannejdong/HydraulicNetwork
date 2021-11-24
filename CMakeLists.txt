@@ -3,7 +3,6 @@ project(HydraulicNetwork)
 
 set(CMAKE_CXX_STANDARD 20)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-find_package(range)
 
 add_compile_options(-Wall -Wextra -pedantic -Wmissing-include-dirs -Wformat=2 -Wunused -Wcast-align)
 

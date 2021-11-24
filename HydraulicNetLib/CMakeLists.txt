@@ -1,4 +1,8 @@
 project(HydraulicNetLib)
+# Disable response files
+set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_INCLUDES Off)
+#set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")  #use this for clang
+
 add_library(HydraulicNetLib src/NetworkSolve.cpp )
 
 target_include_directories(HydraulicNetLib PUBLIC include)   # PUBLIC to allow main.cpp to access it
